@@ -1,0 +1,26 @@
+{
+  "name": "ringtail-app-graphed-results",
+  "version": "0.9.0",
+  "description": "Example app using Ringtail's extensibility APIs to display user coding in graphs",
+  "main": "index.js",
+  "repository": "https://github.com/ringtail-software/ringtail-app-graphed-results.git",
+  "author": "Collin Arnold <collin.arnold@fticonsulting.com>",
+  "license": "MIT",
+  "scripts": {
+    "build": "webpack --mode development",
+    "release": "webpack --mode production"
+  },
+  "dependencies": {
+    "@ringtail-software/ringtail-extension-sdk": "^0.9.0",
+    "dc": "^2.1.10",
+    "promise-polyfill": "^7.1.0",
+    "restify": "^6.3.4",
+    "whatwg-fetch": "^2.0.3"
+  },
+  "devDependencies": {
+    "css-loader": "^0.28.11",
+    "style-loader": "^0.20.3",
+    "webpack": "^4.1.1",
+    "webpack-cli": "^2.0.12"
+  }
+}
