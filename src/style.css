@@ -1,0 +1,28 @@
+
+html,body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Arial, Tahoma, sans-serif;
+    font-size: 14px;
+    color: #333333;
+}
+body {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    align-items: stretch;
+}
+#graph {
+    flex: 1;
+    overflow: hidden;
+}
+.dc-chart .axis text,
+.dc-chart g.row text {
+    font-family: 'Segoe UI', Arial, Tahoma, sans-serif;
+    font-size: 13px;
+    fill: #333333;
+}
+.dc-chart .selected path {
+    stroke: #333;
+    stroke-width: 2;
+}

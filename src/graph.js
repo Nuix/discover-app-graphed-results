@@ -1,5 +1,7 @@
 
 import 'dc/dc.css';
+import './style.css';
+
 const dc = require('dc');
 const d3 = dc.d3;
 const crossfilter = dc.crossfilter;
