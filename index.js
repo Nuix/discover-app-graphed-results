@@ -1,9 +1,10 @@
 const restify = require('restify');
 
 const server = restify.createServer();
-server.get(/\/.*/, restify.plugins.serveStatic({
-    directory: './dist',
-    default: 'index.html'
+server.get(/.*/, restify.plugins.serveStatic({
+    directory: __dirname + '/dist',
+    default: 'index.html',
+    maxAge: 0
 }));
 
 server.listen(12345, () => {
