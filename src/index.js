@@ -28,6 +28,7 @@ function updateTools() {
     Ringtail.setTools([{
         type: 'combo',
         id: 'fieldPicker',
+        placeholder: 'Select a field',
         width: 250,
         value: Data.activeField,
         choices: Data.fields.map(function (field) {
@@ -76,7 +77,7 @@ function loadData() {
 
     // Request coding count aggregates for the active result set and selected field
     // from Ringtail via GraphQL
-    Ringtail.query('{ \
+    Ringtail.query('query ($caseId: Int!, $resultSetId: Int!, $fieldId: String!) { \
         cases (id: $caseId) { \
             searchResults (id: $resultSetId) { \
                 fields (id: $fieldId) { \
@@ -100,7 +101,7 @@ function loadData() {
 }
 
 function handleActiveDocChanged(msg) {
-    if (msg.data.resultSetId !== resultSetId) {
+    if (msg.data.resultSetId !== Data.resultSetId) {
         // We only need to reload when the result set changes - ignore other changes!
         loadData();
     }
@@ -123,7 +124,7 @@ Ringtail.on('ToolAction', handleToolAction);
 Ringtail.initialize().then(function () {
     // Request available coding fields for this user to display in a field picker
     // from Ringtail via GraphQL
-    return Ringtail.query('{ \
+    return Ringtail.query('query ($caseId: Int!) { \
         cases (id: $caseId) { \
             fields (entityId: 1) { \
                 id \
