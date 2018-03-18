@@ -17,9 +17,12 @@ const Data = {
 
     resultSetId: null,  // Updated via ActiveDocument event so we can detect changes
 
-    activeField: null,      // Field the user selected to graph coding for
-    activeGraphType: 'bar', // Type of graph to draw
-    activeCountAxis: 'y'    // Which axis of the graph shows coding counts
+    // Field the user selected to graph coding for
+    activeField: localStorage.getItem('GraphedResults.ActiveField') || null,
+    // Type of graph to draw
+    activeGraphType: localStorage.getItem('GraphedResults.ActiveGraphType') || 'bar',
+    // Which axis of the graph shows coding counts
+    activeCountAxis: localStorage.getItem('GraphedResults.ActiveCountAxis') || 'y'
 };
 
 
@@ -77,7 +80,8 @@ function loadData() {
 
     // Request coding count aggregates for the active result set and selected field
     // from Ringtail via GraphQL
-    Ringtail.query('query ($caseId: Int!, $resultSetId: Int!, $fieldId: String!) { \
+    Ringtail.query(' \
+    query ($caseId: Int!, $resultSetId: Int!, $fieldId: String!) { \
         cases (id: $caseId) { \
             searchResults (id: $resultSetId) { \
                 fields (id: $fieldId) { \
@@ -112,7 +116,29 @@ function handleFacetSelectionChanged(msg) {
 }
 
 function handleToolAction(msg) {
-    // TODO: Handle user input
+    switch (msg.data.id) {
+        case 'fieldPicker':
+            Data.activeField = msg.data.value;
+            localStorage.setItem('GraphedResults.ActiveField', Data.activeField);
+            loadData();
+            break;
+        case 'graphTypePicker':
+            Data.activeGraphType = msg.data.value;
+            localStorage.setItem('GraphedResults.ActiveGraphType', Data.activeGraphType);
+            loadData();
+            break;
+        case 'axisPicker':
+            Data.activeCountAxis = msg.data.value;
+            localStorage.setItem('GraphedResults.ActiveCountAxis', Data.activeCountAxis);
+            loadData();
+            break;
+        case 'printButton':
+            window.print();
+            break;
+        case 'refreshButton':
+            loadData();
+            break;
+    }
 }
 
 // Listen for these events from Ringtail
@@ -124,7 +150,8 @@ Ringtail.on('ToolAction', handleToolAction);
 Ringtail.initialize().then(function () {
     // Request available coding fields for this user to display in a field picker
     // from Ringtail via GraphQL
-    return Ringtail.query('query ($caseId: Int!) { \
+    return Ringtail.query(' \
+    query ($caseId: Int!) { \
         cases (id: $caseId) { \
             fields (entityId: 1) { \
                 id \
