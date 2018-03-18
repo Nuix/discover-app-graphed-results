@@ -7,13 +7,15 @@ import 'promise-polyfill/src/polyfill';
 import 'ringtail-extension-sdk';
 
 // Our own dependencies
-import 'dc/dc.css';
+import { renderGraph } from './graph';
 
 
 // Track our state here so we can differentiate it from local variables by namespace
-const Data = {
-    fields: null,       // Populated once on load via Ringtail API query
-    graphData: null,    // Populated when the result set changes via Ringtail API query
+global.Data = {
+    fields: null,               // Populated once on load via Ringtail API query
+    graphData: null,            // Populated when results change via Ringtail API query
+    chart: null,                // dcjs rendered chart
+    syncingSelection: false,    // True when setting selection to prevent cycles
 
     resultSetId: null,  // Updated via ActiveDocument event so we can detect changes
 
@@ -77,6 +79,7 @@ function loadData() {
 
     // Keep track of the current result set ID so we can detect changes
     Data.resultSetId = Ringtail.ActiveDocument.get().resultSetId;
+    Ringtail.setLoading(true);
 
     // Request coding count aggregates for the active result set and selected field
     // from Ringtail via GraphQL
@@ -84,7 +87,7 @@ function loadData() {
     query ($caseId: Int!, $resultSetId: Int!, $fieldId: String!) { \
         cases (id: $caseId) { \
             searchResults (id: $resultSetId) { \
-                fields (id: $fieldId) { \
+                fields (id: [$fieldId]) { \
                     items { \
                         id \
                         name \
@@ -98,9 +101,8 @@ function loadData() {
         resultSetId: Data.resultSetId,
         fieldId: Data.activeField
     }).then(function (response) {
-        Data.graphData = response.data.cases[0].searchResults[0].fields;
-
-        // TODO: Draw the graph here now that we have the data
+        Data.graphData = response.data.cases[0].searchResults[0].fields[0].items;
+        renderGraph();
     });
 }
 
@@ -162,4 +164,5 @@ Ringtail.initialize().then(function () {
 }).then(function (response) {
     Data.fields = response.data.cases[0].fields;
     updateTools();
+    loadData();
 });
