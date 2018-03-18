@@ -121,6 +121,22 @@ export function renderGraph() {
     Ringtail.setLoading(false);
 }
 
+export function updateSelection(selection) {
+    if (!Data.chart) {
+        return;
+    }
+    Data.chart.filter(null);
+
+    if (selection.length > 0) {
+       Data.graphData.forEach(function (item, index) {
+           if (selection.indexOf(item.id) >= 0) {
+               Data.chart.filter(index);
+           }
+       });
+   }
+   Data.chart.redraw();
+}
+
 function handleResize(printing) {
     var chart = Data.chart,
         width = document.body.clientWidth,

@@ -7,7 +7,7 @@ import 'promise-polyfill/src/polyfill';
 import 'ringtail-extension-sdk';
 
 // Our own dependencies
-import { renderGraph } from './graph';
+import { renderGraph, updateSelection } from './graph';
 
 
 // Track our state here so we can differentiate it from local variables by namespace
@@ -114,7 +114,14 @@ function handleActiveDocChanged(msg) {
 }
 
 function handleFacetSelectionChanged(msg) {
-    // TODO: Synchronize selection from Ringtail with the graph
+    Data.syncingSelection = true;
+    try {
+        if (msg.data.fieldId === Data.activeField) {
+            updateSelection(msg.data.values);
+        }
+    } finally {
+        Data.syncingSelection = false;
+    }
 }
 
 function handleToolAction(msg) {
