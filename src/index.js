@@ -4,7 +4,7 @@
 import 'promise-polyfill/src/polyfill';
 
 // Provides Ringtail communication and utility APIs
-import '@ringtail-software/ringtail-extension-sdk';
+import 'ringtail-extension-sdk';
 
 // Our own dependencies
 import 'dc/dc.css';

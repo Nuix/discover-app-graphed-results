@@ -8,14 +8,14 @@
   "license": "MIT",
   "scripts": {
     "build": "webpack --mode development --devtool cheap-module-eval-source-map",
-    "release": "webpack --mode production --devtool source-map",
+    "release": "webpack --mode production",
     "start": "node index.js"
   },
   "dependencies": {
-    "@ringtail-software/ringtail-extension-sdk": "^0.9.0",
     "dc": "^2.1.10",
     "promise-polyfill": "^7.1.0",
     "restify": "^6.3.4",
+    "ringtail-extension-sdk": "^0.9.1",
     "whatwg-fetch": "^2.0.3"
   },
   "devDependencies": {

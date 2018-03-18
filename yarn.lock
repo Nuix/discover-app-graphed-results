@@ -2,10 +2,6 @@
 # yarn lockfile v1
 
 
-"@ringtail-software/ringtail-extension-sdk@^0.9.0":
-  version "0.9.0"
-  resolved "https://registry.yarnpkg.com/@ringtail-software/ringtail-extension-sdk/-/ringtail-extension-sdk-0.9.0.tgz#cbb859b2b877b8fec0792c2c29ecb5a30065ab87"
-
 "@sindresorhus/is@^0.7.0":
   version "0.7.0"
   resolved "https://registry.yarnpkg.com/@sindresorhus/is/-/is-0.7.0.tgz#9a06f4f137ee84d7df0460c1fdb1135ffa6c50fd"
@@ -4448,6 +4444,10 @@ rimraf@~2.4.0:
   resolved "https://registry.yarnpkg.com/rimraf/-/rimraf-2.4.5.tgz#ee710ce5d93a8fdb856fb5ea8ff0e2d75934b2da"
   dependencies:
     glob "^6.0.1"
+
+ringtail-extension-sdk@^0.9.1:
+  version "0.9.1"
+  resolved "https://registry.yarnpkg.com/ringtail-extension-sdk/-/ringtail-extension-sdk-0.9.1.tgz#5154cbda3ef53a0718f3ffaa9e7f43ff329a5ffb"
 
 ripemd160@^2.0.0, ripemd160@^2.0.1:
   version "2.0.1"
