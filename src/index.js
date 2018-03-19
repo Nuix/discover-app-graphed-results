@@ -134,12 +134,12 @@ function handleToolAction(msg) {
         case 'graphTypePicker':
             Data.activeGraphType = msg.data.value;
             localStorage.setItem('GraphedResults.ActiveGraphType', Data.activeGraphType);
-            loadData();
+            renderGraph();
             break;
         case 'axisPicker':
             Data.activeCountAxis = msg.data.value;
             localStorage.setItem('GraphedResults.ActiveCountAxis', Data.activeCountAxis);
-            loadData();
+            renderGraph();
             break;
         case 'printButton':
             window.print();
@@ -157,6 +157,8 @@ Ringtail.on('ToolAction', handleToolAction);
 
 // Register ourselves as a UIX with Ringtail and open communications
 Ringtail.initialize().then(function () {
+    Ringtail.setLoading(true);
+    
     // Request available coding fields for this user to display in a field picker
     // from Ringtail via GraphQL
     return Ringtail.query(' \
@@ -171,5 +173,5 @@ Ringtail.initialize().then(function () {
 }).then(function (response) {
     Data.fields = response.data.cases[0].fields;
     updateTools();
-    loadData();
+    // Wait for the initial ActiveDocument message to trigger the first render
 });
