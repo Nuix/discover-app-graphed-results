@@ -6,6 +6,8 @@ const dc = require('dc');
 const d3 = dc.d3;
 const crossfilter = dc.crossfilter;
 
+const MaxPieSlices = 10;
+
 function getChartType() {
     return Data.activeGraphType === 'line' ? 'line'
         : Data.activeGraphType === 'pie' ? 'pie'
@@ -69,7 +71,7 @@ export function renderGraph() {
     if (Data.activeGraphType === 'pie') {
         chart
             .externalRadiusPadding(20)
-            .slicesCap(10)
+            .slicesCap(MaxPieSlices)
             .label(function (d) { return getLabel(d.key); })
             .legend(dc.legend()
                 .x(20)
@@ -117,7 +119,9 @@ export function renderGraph() {
 
     handleResize();
 
-    Ringtail.FacetSelection.get(Data.activeField);
+    Ringtail.FacetSelection.get(Data.activeField).then(function (selection) {
+        updateSelection(selection.values);
+    });
     Ringtail.setLoading(false);
 }
 
