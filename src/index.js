@@ -17,7 +17,7 @@ global.Data = {
     chart: null,                // dcjs rendered chart
     syncingSelection: false,    // True when setting selection to prevent cycles
 
-    resultSetId: null,  // Updated via ActiveDocument event so we can detect changes
+    searchResultId: null,       // Updated via ActiveDocument event so we can detect changes
 
     // Field the user selected to graph coding for
     activeField: localStorage.getItem('GraphedResults.ActiveField') || null,
@@ -73,20 +73,20 @@ function updateTools() {
 
 function loadData() {
     // Skip out if we don't have everything we need to load up yet
-    if (!Ringtail.ActiveDocument.get().resultSetId || !Data.activeField) {
+    if (!Ringtail.ActiveDocument.get().searchResultId || !Data.activeField) {
         return;
     }
 
     // Keep track of the current result set ID so we can detect changes
-    Data.resultSetId = Ringtail.ActiveDocument.get().resultSetId;
+    Data.searchResultId = Ringtail.ActiveDocument.get().searchResultId;
     Ringtail.setLoading(true);
 
     // Request coding count aggregates for the active result set and selected field
     // from Ringtail via GraphQL
     Ringtail.query(' \
-    query ($caseId: Int!, $resultSetId: Int!, $fieldId: String!) { \
+    query ($caseId: Int!, $searchResultId: Int!, $fieldId: String!) { \
         cases (id: $caseId) { \
-            searchResults (id: $resultSetId) { \
+            searchResults (id: $searchResultId) { \
                 fields (id: [$fieldId]) { \
                     items { \
                         id \
@@ -98,7 +98,7 @@ function loadData() {
         } \
     }', { 
         caseId: Ringtail.Context.caseId,
-        resultSetId: Data.resultSetId,
+        searchResultId: Data.searchResultId,
         fieldId: Data.activeField
     }).then(function (response) {
         Data.graphData = response.data.cases[0].searchResults[0].fields[0].items;
@@ -107,13 +107,13 @@ function loadData() {
 }
 
 function handleActiveDocChanged(msg) {
-    if (msg.data.resultSetId !== Data.resultSetId) {
+    if (msg.data.searchResultId !== Data.searchResultId) {
         // We only need to reload when the result set changes - ignore other changes!
         loadData();
     }
 }
 
-function handleFacetSelectionChanged(msg) {
+function handleBrowseSelectionChanged(msg) {
     Data.syncingSelection = true;
     try {
         if (msg.data.fieldId === Data.activeField) {
@@ -152,7 +152,7 @@ function handleToolAction(msg) {
 
 // Listen for these events from Ringtail
 Ringtail.on('ActiveDocument', handleActiveDocChanged)
-Ringtail.on('FacetSelection', handleFacetSelectionChanged);
+Ringtail.on('BrowseSelection', handleBrowseSelectionChanged);
 Ringtail.on('ToolAction', handleToolAction);
 
 // Register ourselves as a UIX with Ringtail and open communications

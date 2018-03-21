@@ -7,7 +7,7 @@ It demonstrates:
 - Connect API querying
 - Constructing custom tools in Ringtail's UI
 - Responding to user actions from Ringtail, and
-- Manipulating Ringtail's facet selection state
+- Manipulating Ringtail's Browse selection state
 
 ## How to run it
 1. Sync this repo locally

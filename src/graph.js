@@ -53,7 +53,7 @@ export function renderGraph() {
         })
         .addFilterHandler(function (filters, index) {
             if (!Data.syncingSelection) {
-                Ringtail.FacetSelection.select(Data.activeField, true, [Data.graphData[index].id]);
+                Ringtail.BrowseSelection.select(Data.activeField, true, [Data.graphData[index].id]);
             }
 
             filters.push(index);
@@ -61,7 +61,7 @@ export function renderGraph() {
         })
         .removeFilterHandler(function (filters, index) {
             if (!Data.syncingSelection) {
-                Ringtail.FacetSelection.select(Data.activeField, false, [Data.graphData[index].id]);
+                Ringtail.BrowseSelection.select(Data.activeField, false, [Data.graphData[index].id]);
             }
 
             filters.splice(filters.indexOf(index), 1);
@@ -119,7 +119,7 @@ export function renderGraph() {
 
     handleResize();
 
-    Ringtail.FacetSelection.get(Data.activeField).then(function (selection) {
+    Ringtail.BrowseSelection.get(Data.activeField).then(function (selection) {
         updateSelection(selection.values);
     });
     Ringtail.setLoading(false);
