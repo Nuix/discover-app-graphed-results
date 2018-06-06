@@ -26,6 +26,7 @@ It demonstrates:
 1. Click on the new extension in the list
 1. Grant access to it on the `Organizations` and `Cases` tabs so it will show up in a case
 1. Enter a case with access to it
+1. Navigate to the `Security > Features` page and set the UI Extension to `allow` for your security group, then refresh your browser to ensure the change took effect
 1. Navigate to the `Documents` area
 1. Edit a workspace and add in the `Graphed Results` pane to see it load up
 1. Run a search to see the graphs populate
