@@ -15,7 +15,7 @@
     "dc": "^2.1.10",
     "promise-polyfill": "^7.1.0",
     "restify": "^6.3.4",
-    "ringtail-extension-sdk": "^0.9.2",
+    "ringtail-extension-sdk": "^0.9.6",
     "whatwg-fetch": "^2.0.3"
   },
   "devDependencies": {
