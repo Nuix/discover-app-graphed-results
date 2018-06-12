@@ -18,6 +18,7 @@ It demonstrates:
 
 ## How to integrate it with Ringtail
 1. Log into Ringtail
+1. Ensure the Ringtail Connect API URL is set in portal settings and that the API service is running by checking `http://yourRingtailURL/Ringtail-Svc-Portal/health/test`
 1. Navigate to `Portal Home -> UI Extensions`
 1. Add a new extension
    - Name: `Graphed Results`
