@@ -172,6 +172,9 @@ Ringtail.initialize().then(function () {
     }', { caseId: Ringtail.Context.caseId });
 }).then(function (response) {
     Data.fields = response.data.cases[0].fields;
+    Data.fields.sort(function (left, right) {
+        return left.name.localeCompare(right.name);
+    });
     updateTools();
     // Wait for the initial ActiveDocument message to trigger the first render
 });
