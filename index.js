@@ -7,6 +7,6 @@ server.get(/.*/, restify.plugins.serveStatic({
     maxAge: 0
 }));
 
-server.listen(12345, () => {
+server.listen(process.env.GRAPHED_RESULTS_PORT || 12345, () => {
     console.log('%s listening at %s', server.name, server.url);
 });
