@@ -16,6 +16,8 @@ It demonstrates:
 1. Run `yarn start` to start the webserver
 1. Navigate to `http://localhost:12345/` in a browser to verify the app loads
 
+_NOTE: You can change the port via the `GRAPHED_RESULTS_PORT` environment variable._
+
 ## How to integrate it with Ringtail
 1. Log into Ringtail
 1. Ensure the Ringtail Connect API URL is set in portal settings and that the API service is running by checking `http://yourRingtailURL/Ringtail-Svc-Portal/health/test`
