@@ -14,16 +14,16 @@ function getChartType() {
         : Data.activeCountAxis === 'y' ? 'bar' : 'row';
 }
 
-function buildChart() {
+function buildChart(parentEl) {
     switch (getChartType()) {
-        case 'line': return dc.lineChart('#graph');
-        case 'pie': return dc.pieChart('#graph');
-        case 'bar': return dc.barChart('#graph');
-        case 'row': return dc.rowChart('#graph');
+        case 'line': return dc.lineChart(parentEl);
+        case 'pie': return dc.pieChart(parentEl);
+        case 'bar': return dc.barChart(parentEl);
+        case 'row': return dc.rowChart(parentEl);
     }
 }
 
-export function renderGraph() {
+export function renderGraph(parentEl) {
     if (Data.graphData.length > 10) {
         Data.graphData = Data.graphData.filter(function (rec) {
             return rec.count > 0;
@@ -33,7 +33,7 @@ export function renderGraph() {
         return right.count - left.count;
     });
 
-    var chart = buildChart(),
+    var chart = buildChart(parentEl),
         ndx = crossfilter(Data.graphData),
         valueDim = ndx.dimension(function (d, index) { return index; }),
         valueGroup = valueDim.group().reduceSum(function (d) { return d.count; }),
