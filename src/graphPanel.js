@@ -34,8 +34,10 @@ function GraphPanel(container, state) {
 GraphPanel.prototype.buildCombo = function buildCombo(value, choices, cls, callback) {
     const me = this;
     const el = jquery('\
-    <select value="' + value + '">\
-        ' + choices.map(function (field) { return '<option value="' + field.id + '">' + field.name + '</option>'; }).join('\n') + '\
+    <select>\
+        ' + choices.map(function (field) {
+            return '<option value="' + field.id + '"' + (value === field.id ? ' selected' : '') + '>' + field.name + '</option>';
+        }).join('\n') + '\
     </select>');
     el.combobox();
     el.on('change', function () {
