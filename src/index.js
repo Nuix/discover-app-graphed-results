@@ -46,25 +46,28 @@ function updateTools() {
 function renderGraph() {
     if (Data.layout) return;
 
+    const DefaultState = {
+        dimensions: {
+            borderWidth: 7
+        },
+        content:[{
+            type: 'row',
+            content:[{
+                type: 'component',
+                componentName: 'graph'
+            }, {
+                type: 'component',
+                componentName: 'graph'
+            }]
+        }]
+    };
+
     let state = null;
     try {
         state = JSON.parse(localStorage.getItem('savedState'));
-    } catch (ex) {
-        state = {
-            dimensions: {
-                borderWidth: 7
-            },
-            content:[{
-                type: 'row',
-                content:[{
-                    type: 'component',
-                    componentName: 'graph'
-                }, {
-                    type: 'component',
-                    componentName: 'graph'
-                }]
-            }]
-        };
+    } catch (ex) { }
+    if (!state) {
+        state = DefaultState;
     }
 
     Data.layout = new GoldenLayout(state);
@@ -84,7 +87,6 @@ function renderGraph() {
 function loadData() {
     if (!Data.layout) return;
 
-    Ringtail.setLoading(true);
     Data.layout.root.contentItems[0].getItemsByType('component').forEach(function (container) {
         container.graphPanel.loadData();
     });
