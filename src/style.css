@@ -6,13 +6,40 @@ html,body {
     font-size: 14px;
     color: #333333;
 }
-body {
-    width: 100vw;
-    height: 100vh;
+
+.toolbar {
+    background-color: #F5F6F8;
     display: flex;
-    align-items: stretch;
+    flex-direction: row;
+    padding: 5px;
+    border-bottom: 1px solid #C5C8CF;
 }
-#graph {
+.toolbar .ui-combobox {
+    margin-right: 5px;
+    background: white;
+    border: 1px solid #cfcfcf;
+}
+.toolbar .ui-combobox input {
+    background-color: transparent;
+    border: none;
+    padding: 1.5px 5px;
+}
+.toolbar .ui-combobox :focus {
+    border: none;
+    outline: none;
+}
+.toolbar .ui-combobox .ui-icon {
+    cursor: pointer;
+}
+.ui-autocomplete {
+    max-height: 250px;
+    overflow: hidden auto;
+}
+.fill {
+    flex: 1;
+}
+
+.graph {
     flex: 1;
     overflow: hidden;
 }

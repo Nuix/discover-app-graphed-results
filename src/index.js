@@ -34,7 +34,7 @@ function updateTools() {
 }
 
 function renderGraph() {
-    var testPanel = new GraphPanel('#graph');
+    var testPanel = new GraphPanel('#root');
 }
 
 function loadData() {
