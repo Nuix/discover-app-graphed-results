@@ -32,6 +32,11 @@ function updateTools() {
         label: 'Reload'
     }, {
         type: 'button',
+        icon: 'icon-add',
+        id: 'addButton',
+        label: 'Add panel'
+    }, {
+        type: 'button',
         icon: 'icon-print',
         id: 'printButton',
         label: 'Print'
@@ -39,6 +44,8 @@ function updateTools() {
 }
 
 function renderGraph() {
+    if (Data.layout) return;
+    
     Data.layout = new GoldenLayout({
         content:[{
             type: 'row',
@@ -46,7 +53,7 @@ function renderGraph() {
                 type: 'component',
                 componentName: 'graph',
                 componentState: { color: '#1D84BD' }
-            },{
+            }, {
                 type: 'component',
                 componentName: 'graph',
                 componentState: { color: '#F15C25' }
@@ -86,6 +93,13 @@ function handleToolAction(msg) {
             break;
         case 'refreshButton':
             renderGraph();
+            break;
+        case 'addButton':
+            Data.layout.root.contentItems[0].addChild({
+                type: 'component',
+                componentName: 'graph',
+                componentState: { color: '#F15C25' }
+            });
             break;
     }
 }

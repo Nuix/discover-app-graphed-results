@@ -173,7 +173,6 @@ function handleResize(printing) {
         .render();
 }
 
-window.addEventListener('resize', handleResize);
 if (window.matchMedia) {
     var mediaQueryList = window.matchMedia('print');
     mediaQueryList.addListener(function (mql) {
