@@ -52,10 +52,19 @@ html,body {
     flex: 1;
 }
 
+
+.lm_content {
+    background: white;
+    border: 1px solid #cfcfcf;
+    display: flex;
+    flex-direction: column;
+}
 .graph {
     flex: 1;
     overflow: hidden;
 }
+
+
 .dc-chart .axis text,
 .dc-chart g.row text {
     font-family: 'Segoe UI', Arial, Tahoma, sans-serif;

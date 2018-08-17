@@ -6,39 +6,69 @@ import 'jquery-ui.combobox';
 
 import { renderGraph, updateSelection } from './graph';
 
-function GraphPanel(parentEl, state) {
+function GraphPanel(container, state) {
     state = state || {};
 
-    this.parentEl = parentEl;       // The container element to render the graph into
-    this.graphData = null;                                  // Populated when results change via Ringtail API query
-    this.chart = null;                                      // dcjs rendered chart
+    this.container = container;
+    this.parentEl = container.getElement();       // The container element to render the graph into
+    this.graphData = null;          // Populated when results change via Ringtail API query
+    this.chart = null;              // dcjs rendered chart
 
-    this.activeField = state.activeField || 0;           // Field the user selected to graph coding for
+    this.activeField = state.activeField || 0;              // Field the user selected to graph coding for
     this.activeGraphType = state.activeGraphType || 'bar';  // Type of graph to draw
     this.activeCountAxis = state.activeCountAxis || 'y';    // Which axis of the graph shows coding counts
 
     this.parentEl.html('<div class="toolbar"></div><div class="graph"></div>');
     const toolbarEl = jquery('.toolbar', this.parentEl);
-    toolbarEl.append(buildCombo(this.activeField, Data.fields, 'pick-field'));
-    toolbarEl.append(buildCombo(this.activeGraphType, [
+    toolbarEl.append(this.buildCombo(this.activeField, Data.fields, 'pick-field', this.handleFieldChange));
+    toolbarEl.append(this.buildCombo(this.activeGraphType, [
         { id: 'bar', name: 'Bar' },
         { id: 'line', name: 'Line' },
         { id: 'pie', name: 'Pie' },
-    ], 'pick-graph'));
-    toolbarEl.append(buildCombo(this.activeCountAxis, [
+    ], 'pick-graph', this.handleGraphChange));
+    toolbarEl.append(this.buildCombo(this.activeCountAxis, [
         { id: 'y', name: 'Y-Axis Counts' },
         { id: 'x', name: 'X-Axis Counts' },
-    ], 'pick-axis'));
+    ], 'pick-axis', this.handleAxisChange));
+
+    this.loadData();
+    this.container.on('resize', this.draw.bind(this))
 }
 
-function buildCombo(value, choices, cls) {
-    var el = jquery('\
+GraphPanel.prototype.buildCombo = function buildCombo(value, choices, cls, callback) {
+    const me = this;
+    const el = jquery('\
     <select value="' + value + '">\
         ' + choices.map(function (field) { return '<option value="' + field.id + '">' + field.name + '</option>'; }).join('\n') + '\
     </select>');
     el.combobox();
+    el.on('change', function () {
+        callback.call(me, this.value === '0' ? null : this.value);
+        // jquery('.ui-helper-hidden-accessible').remove();
+    });
     return el.next().addClass(cls);
 }
+
+GraphPanel.prototype.handleFieldChange = function handleFieldChange(value) {
+    if (this.activeField !== value) {
+        this.activeField = value;
+        this.loadData();
+    }
+};
+
+GraphPanel.prototype.handleGraphChange = function handleGraphChange(value) {
+    if (this.activeGraphType !== value) {
+        this.activeGraphType = value;
+        this.loadData();
+    }
+};
+
+GraphPanel.prototype.handleAxisChange = function handleAxisChange(value) {
+    if (this.activeCountAxis !== value) {
+        this.activeCountAxis = value;
+        this.loadData();
+    }
+};
 
 GraphPanel.prototype.loadData = function loadData() {
     const me = this;
@@ -80,7 +110,9 @@ GraphPanel.prototype.loadData = function loadData() {
 };
 
 GraphPanel.prototype.draw = function draw() {
-    renderGraph.apply(this);
+    if (this.graphData) {
+        renderGraph.apply(this);
+    }
 };
 
 export default GraphPanel;

@@ -14,8 +14,8 @@ function getChartType() {
         : this.activeCountAxis === 'y' ? 'bar' : 'row';
 }
 
-function buildChart() {
-    switch (this.getChartType()) {
+function buildChart(parentEl) {
+    switch (getChartType.call(this)) {
         case 'line': return dc.lineChart(parentEl);
         case 'pie': return dc.pieChart(parentEl);
         case 'bar': return dc.barChart(parentEl);
@@ -35,7 +35,8 @@ export function renderGraph() {
         return right.count - left.count;
     });
 
-    var chart = buildChart(this.parentEl.find('.graph')[0]),
+    this.graphEl = this.parentEl.find('.graph')[0];
+    var chart = buildChart.call(this, this.graphEl),
         ndx = crossfilter(me.graphData),
         valueDim = ndx.dimension(function (d, index) { return index; }),
         valueGroup = valueDim.group().reduceSum(function (d) { return d.count; }),
@@ -119,7 +120,7 @@ export function renderGraph() {
         }
     }
 
-    me.handleResize();
+    handleResize.call(me);
 
     Ringtail.BrowseSelection.get(me.activeField).then(function (selection) {
         updateSelection(selection.values);
@@ -145,8 +146,8 @@ export function updateSelection(selection) {
 
 function handleResize(printing) {
     var chart = this.chart,
-        width = document.body.clientWidth,
-        height = document.body.clientHeight;
+        width = this.graphEl.clientWidth,
+        height = this.graphEl.clientHeight;
     if (!chart) {
         return;
     }

@@ -55,7 +55,7 @@ function renderGraph() {
     });
 
     Data.layout.registerComponent('graph', function (container, state) {
-        new GraphPanel(container.getElement());
+        new GraphPanel(container, state);
     });
 
     Data.layout.init();
