@@ -68,6 +68,10 @@ GraphPanel.prototype.loadData = function loadData() {
     const canLoadData = Ringtail.Context.hostLocation !== 'Workspace'
         || Ringtail.ActiveDocument.get().searchResultId;
 
+    me.container.setTitle(Data.fields.reduce(function (name, field) {
+        return name || (field.id === me.activeField ? field.name : null);
+    }, null));
+
     // Skip out if we don't have everything we need to load up yet
     if (!canLoadData || !me.activeField) {
         return;
