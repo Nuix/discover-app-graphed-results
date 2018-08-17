@@ -7,10 +7,14 @@ html,body {
     color: #333333;
 }
 
+.lm_popout,
+.lm_close {
+    display: none;
+}
+
 .toolbar {
     background-color: #F5F6F8;
     display: flex;
-    flex-direction: row;
     padding: 5px;
     border-bottom: 1px solid #C5C8CF;
 }
@@ -18,6 +22,9 @@ html,body {
     margin-right: 5px;
     background: white;
     border: 1px solid #cfcfcf;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
 }
 .toolbar .ui-combobox input {
     background-color: transparent;
@@ -29,7 +36,7 @@ html,body {
     outline: none;
 }
 .toolbar .ui-combobox .ui-icon {
-    cursor: pointer;
+    margin-top: 1px;
 }
 .ui-autocomplete {
     max-height: 250px;

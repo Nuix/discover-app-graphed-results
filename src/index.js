@@ -1,5 +1,9 @@
 'use strict';
 
+import GoldenLayout from 'golden-layout';
+import 'golden-layout/src/css/goldenlayout-base.css';
+import 'golden-layout/src/css/goldenlayout-light-theme.css';
+
 // Promise polyfill for IE11
 import 'promise-polyfill/src/polyfill';
 
@@ -15,6 +19,7 @@ global.Data = {
     fields: null,               // Populated once on load via Ringtail API query
     syncingSelection: false,    // True when setting selection to prevent cycles
     searchResultId: null,       // Updated via ActiveDocument event so we can detect changes
+    layout: null,               // GoldenLayout root
 };
 
 
@@ -34,7 +39,26 @@ function updateTools() {
 }
 
 function renderGraph() {
-    var testPanel = new GraphPanel('#root');
+    Data.layout = new GoldenLayout({
+        content:[{
+            type: 'row',
+            content:[{
+                type: 'component',
+                componentName: 'graph',
+                componentState: { color: '#1D84BD' }
+            },{
+                type: 'component',
+                componentName: 'graph',
+                componentState: { color: '#F15C25' }
+            }]
+        }]
+    });
+
+    Data.layout.registerComponent('graph', function (container, state) {
+        new GraphPanel(container.getElement());
+    });
+
+    Data.layout.init();
 }
 
 function loadData() {
