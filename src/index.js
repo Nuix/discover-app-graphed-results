@@ -45,7 +45,7 @@ function updateTools() {
 
 function renderGraph() {
     if (Data.layout) return;
-    
+
     Data.layout = new GoldenLayout({
         content:[{
             type: 'row',
@@ -62,7 +62,7 @@ function renderGraph() {
     });
 
     Data.layout.registerComponent('graph', function (container, state) {
-        new GraphPanel(container, state);
+        container.parent.graphPanel = new GraphPanel(container, state);
     });
 
     Data.layout.init();
@@ -92,7 +92,9 @@ function handleToolAction(msg) {
             window.print();
             break;
         case 'refreshButton':
-            renderGraph();
+            Data.layout.root.contentItems[0].getItemsByType('component').forEach(function (container) {
+                container.graphPanel.loadData();
+            });
             break;
         case 'addButton':
             Data.layout.root.contentItems[0].addChild({
