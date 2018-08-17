@@ -16,20 +16,16 @@ function GraphPanel(container, state) {
 
     this.activeField = state.activeField || 0;              // Field the user selected to graph coding for
     this.activeGraphType = state.activeGraphType || 'bar';  // Type of graph to draw
-    this.activeCountAxis = state.activeCountAxis || 'y';    // Which axis of the graph shows coding counts
 
     this.parentEl.html('<div class="toolbar"></div><div class="graph"></div>');
     const toolbarEl = jquery('.toolbar', this.parentEl);
     toolbarEl.append(this.buildCombo(this.activeField, Data.fields, 'pick-field', this.handleFieldChange));
     toolbarEl.append(this.buildCombo(this.activeGraphType, [
-        { id: 'bar', name: 'Bar' },
+        { id: 'bar', name: 'Column' },
+        { id: 'row', name: 'Row' },
         { id: 'line', name: 'Line' },
         { id: 'pie', name: 'Pie' },
     ], 'pick-graph', this.handleGraphChange));
-    toolbarEl.append(this.buildCombo(this.activeCountAxis, [
-        { id: 'y', name: 'Y-Axis Counts' },
-        { id: 'x', name: 'X-Axis Counts' },
-    ], 'pick-axis', this.handleAxisChange));
 
     this.loadData();
     this.container.on('resize', this.draw.bind(this))
@@ -59,13 +55,6 @@ GraphPanel.prototype.handleFieldChange = function handleFieldChange(value) {
 GraphPanel.prototype.handleGraphChange = function handleGraphChange(value) {
     if (this.activeGraphType !== value) {
         this.activeGraphType = value;
-        this.loadData();
-    }
-};
-
-GraphPanel.prototype.handleAxisChange = function handleAxisChange(value) {
-    if (this.activeCountAxis !== value) {
-        this.activeCountAxis = value;
         this.loadData();
     }
 };

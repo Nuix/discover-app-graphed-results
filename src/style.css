@@ -43,10 +43,7 @@ html,body {
     overflow: hidden auto;
 }
 .pick-graph input {
-    max-width: 32px;
-}
-.pick-axis input {
-    max-width: 90px;
+    max-width: 60px;
 }
 .fill {
     flex: 1;

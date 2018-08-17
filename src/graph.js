@@ -8,18 +8,12 @@ const crossfilter = dc.crossfilter;
 
 const MaxPieSlices = 10;
 
-function getChartType() {
-    return this.activeGraphType === 'line' ? 'line'
-        : this.activeGraphType === 'pie' ? 'pie'
-        : this.activeCountAxis === 'y' ? 'bar' : 'row';
-}
-
 function buildChart(parentEl) {
-    switch (getChartType.call(this)) {
+    switch (this.activeGraphType) {
         case 'line': return dc.lineChart(parentEl);
         case 'pie': return dc.pieChart(parentEl);
-        case 'bar': return dc.barChart(parentEl);
         case 'row': return dc.rowChart(parentEl);
+        case 'bar': return dc.barChart(parentEl);
     }
 }
 
@@ -82,7 +76,7 @@ export function renderGraph() {
                 .gap(5)
                 .legendText(function (d) { return getLabel(d.name); }));
     } else {
-        if (me.activeCountAxis === 'y' || me.activeGraphType === 'line') {
+        if (me.activeGraphType === 'bar' || me.activeGraphType === 'line') {
             chart
                 .margins({ top: 20, right: 20, bottom: rotateXAxisLabels ? 200 : 30, left: 60 })
                 .x(d3.scale.ordinal())
