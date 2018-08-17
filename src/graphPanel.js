@@ -48,6 +48,7 @@ GraphPanel.prototype.buildCombo = function buildCombo(value, choices, cls, callb
 GraphPanel.prototype.handleFieldChange = function handleFieldChange(value) {
     if (this.activeField !== value) {
         this.activeField = value;
+        this.container.extendState({ activeField: value });
         this.loadData();
     }
 };
@@ -55,6 +56,7 @@ GraphPanel.prototype.handleFieldChange = function handleFieldChange(value) {
 GraphPanel.prototype.handleGraphChange = function handleGraphChange(value) {
     if (this.activeGraphType !== value) {
         this.activeGraphType = value;
+        this.container.extendState({ activeGraphType: value });
         this.loadData();
     }
 };

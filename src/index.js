@@ -46,32 +46,55 @@ function updateTools() {
 function renderGraph() {
     if (Data.layout) return;
 
-    Data.layout = new GoldenLayout({
-        content:[{
-            type: 'row',
+    let state = null;
+    try {
+        state = JSON.parse(localStorage.getItem('savedState'));
+    } catch (ex) {
+        state = {
+            dimensions: {
+                borderWidth: 7
+            },
             content:[{
-                type: 'component',
-                componentName: 'graph',
-                componentState: { color: '#1D84BD' }
-            }, {
-                type: 'component',
-                componentName: 'graph',
-                componentState: { color: '#F15C25' }
+                type: 'row',
+                content:[{
+                    type: 'component',
+                    componentName: 'graph'
+                }, {
+                    type: 'component',
+                    componentName: 'graph'
+                }]
             }]
-        }]
-    });
+        };
+    }
+
+    Data.layout = new GoldenLayout(state);
 
     Data.layout.registerComponent('graph', function (container, state) {
         container.parent.graphPanel = new GraphPanel(container, state);
     });
 
     Data.layout.init();
+
+    Data.layout.on('stateChanged', function() {
+        var state = JSON.stringify(Data.layout.toConfig());
+        localStorage.setItem('savedState', state);
+    });
+}
+
+function loadData() {
+    if (!Data.layout) return;
+
+    Ringtail.setLoading(true);
+    Data.layout.root.contentItems[0].getItemsByType('component').forEach(function (container) {
+        container.graphPanel.loadData();
+    });
 }
 
 function handleActiveDocChanged(msg) {
     if (msg.data.searchResultId !== Data.searchResultId) {
         // We only need to reload when the result set changes - ignore other changes!
         renderGraph();
+        loadData();
     }
 }
 
@@ -92,15 +115,12 @@ function handleToolAction(msg) {
             window.print();
             break;
         case 'refreshButton':
-            Data.layout.root.contentItems[0].getItemsByType('component').forEach(function (container) {
-                container.graphPanel.loadData();
-            });
+            loadData();
             break;
         case 'addButton':
             Data.layout.root.contentItems[0].addChild({
                 type: 'component',
-                componentName: 'graph',
-                componentState: { color: '#F15C25' }
+                componentName: 'graph'
             });
             break;
     }
