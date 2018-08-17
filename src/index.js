@@ -61,45 +61,10 @@ function renderGraph() {
     Data.layout.init();
 }
 
-function loadData() {
-    // Skip out if we don't have everything we need to load up yet
-    if (!Ringtail.ActiveDocument.get().searchResultId || !Data.activeField) {
-        return;
-    }
-
-    // Keep track of the current result set ID so we can detect changes
-    Data.searchResultId = Ringtail.ActiveDocument.get().searchResultId;
-    Ringtail.setLoading(true);
-
-    // Request coding count aggregates for the active result set and selected field
-    // from Ringtail via GraphQL
-    Ringtail.query(' \
-    query ($caseId: Int!, $searchResultId: Int!, $fieldId: String!) { \
-        cases (id: $caseId) { \
-            searchResults (id: $searchResultId) { \
-                fields (id: [$fieldId]) { \
-                    items { \
-                        id \
-                        name \
-                        count \
-                    } \
-                } \
-            } \
-        } \
-    }', { 
-        caseId: Ringtail.Context.caseId,
-        searchResultId: Data.searchResultId,
-        fieldId: Data.activeField
-    }).then(function (response) {
-        Data.graphData = response.data.cases[0].searchResults[0].fields[0].items;
-        renderGraph();
-    });
-}
-
 function handleActiveDocChanged(msg) {
     if (msg.data.searchResultId !== Data.searchResultId) {
         // We only need to reload when the result set changes - ignore other changes!
-        loadData();
+        renderGraph();
     }
 }
 
@@ -116,34 +81,14 @@ function handleBrowseSelectionChanged(msg) {
 
 function handleToolAction(msg) {
     switch (msg.data.id) {
-        case 'fieldPicker':
-            Data.activeField = msg.data.value;
-            localStorage.setItem('GraphedResults.ActiveField', Data.activeField);
-            loadData();
-            break;
-        case 'graphTypePicker':
-            Data.activeGraphType = msg.data.value;
-            localStorage.setItem('GraphedResults.ActiveGraphType', Data.activeGraphType);
-            renderGraph();
-            break;
-        case 'axisPicker':
-            Data.activeCountAxis = msg.data.value;
-            localStorage.setItem('GraphedResults.ActiveCountAxis', Data.activeCountAxis);
-            renderGraph();
-            break;
         case 'printButton':
             window.print();
             break;
         case 'refreshButton':
-            loadData();
+            renderGraph();
             break;
     }
 }
-
-// Listen for these events from Ringtail
-Ringtail.on('ActiveDocument', handleActiveDocChanged)
-Ringtail.on('BrowseSelection', handleBrowseSelectionChanged);
-Ringtail.on('ToolAction', handleToolAction);
 
 // Register ourselves as a UIX with Ringtail and open communications
 Ringtail.initialize().then(function () {
@@ -576,7 +521,13 @@ Ringtail.initialize().then(function () {
     Data.fields.sort(function (left, right) {
         return left.name.localeCompare(right.name);
     });
+    Data.fields.unshift({ id: 0, name: 'Select a field' });
     updateTools();
-    // Wait for the initial ActiveDocument message to trigger the first render
+    
+    // Listen for these events from Ringtail
+    Ringtail.on('ActiveDocument', handleActiveDocChanged);
+    Ringtail.on('BrowseSelection', handleBrowseSelectionChanged);
+    Ringtail.on('ToolAction', handleToolAction);
+
     renderGraph();
 });

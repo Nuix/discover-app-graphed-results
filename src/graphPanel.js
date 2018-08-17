@@ -13,39 +13,74 @@ function GraphPanel(parentEl, state) {
     this.graphData = null;                                  // Populated when results change via Ringtail API query
     this.chart = null;                                      // dcjs rendered chart
 
-    this.activeField = state.activeField || null;           // Field the user selected to graph coding for
+    this.activeField = state.activeField || 0;           // Field the user selected to graph coding for
     this.activeGraphType = state.activeGraphType || 'bar';  // Type of graph to draw
     this.activeCountAxis = state.activeCountAxis || 'y';    // Which axis of the graph shows coding counts
 
-    this.parentEl.html('\
-    <div class="toolbar">\
-        ' + buildCombo('', Data.fields, 'field', 'Select a field') + '\
-        ' + buildCombo('bar', [
-            { id: 'bar', name: 'Bar' },
-            { id: 'line', name: 'Line' },
-            { id: 'pie', name: 'Pie' },
-        ], 'graph') + '\
-        ' + buildCombo('y', [
-            { id: 'y', name: 'Y-Axis Counts' },
-            { id: 'x', name: 'X-Axis Counts' },
-        ], 'axis') + '\
-        <div class="fill"> </div>\
-    </div>\
-    <div class="graph"></div>');
-    this.parentEl.find('select').combobox();
+    this.parentEl.html('<div class="toolbar"></div><div class="graph"></div>');
+    const toolbarEl = jquery('.toolbar', this.parentEl);
+    toolbarEl.append(buildCombo(this.activeField, Data.fields, 'pick-field'));
+    toolbarEl.append(buildCombo(this.activeGraphType, [
+        { id: 'bar', name: 'Bar' },
+        { id: 'line', name: 'Line' },
+        { id: 'pie', name: 'Pie' },
+    ], 'pick-graph'));
+    toolbarEl.append(buildCombo(this.activeCountAxis, [
+        { id: 'y', name: 'Y-Axis Counts' },
+        { id: 'x', name: 'X-Axis Counts' },
+    ], 'pick-axis'));
 }
 
-function newId(prefix) {
-    return prefix + '-' + Math.random().toString(36).substring(2);
-}
-
-function buildCombo(value, choices, cls, placeholder) {
-    return '\
-    <select class="' + cls + '" value="' + value + '" placeholder="' + (placeholder || '') + '">\
+function buildCombo(value, choices, cls) {
+    var el = jquery('\
+    <select value="' + value + '">\
         ' + choices.map(function (field) { return '<option value="' + field.id + '">' + field.name + '</option>'; }).join('\n') + '\
-    </select>';
+    </select>');
+    el.combobox();
+    return el.next().addClass(cls);
 }
 
-// GraphPanel.prototype.
+GraphPanel.prototype.loadData = function loadData() {
+    const me = this;
+    const canLoadData = Ringtail.Context.hostLocation !== 'Workspace'
+        || Ringtail.ActiveDocument.get().searchResultId;
+
+    // Skip out if we don't have everything we need to load up yet
+    if (!canLoadData || !me.activeField) {
+        return;
+    }
+
+    // Keep track of the current result set ID so we can detect changes
+    this.searchResultId = Ringtail.ActiveDocument.get().searchResultId;
+    Ringtail.setLoading(true);
+
+    // Request coding count aggregates for the active result set and selected field
+    // from Ringtail via GraphQL
+    Ringtail.query(' \
+    query ($caseId: Int!, $searchResultId: Int!, $fieldId: String!) { \
+        cases (id: $caseId) { \
+            searchResults (id: $searchResultId) { \
+                fields (id: [$fieldId]) { \
+                    items { \
+                        id \
+                        name \
+                        count \
+                    } \
+                } \
+            } \
+        } \
+    }', { 
+        caseId: Ringtail.Context.caseId,
+        searchResultId: me.searchResultId,
+        fieldId: me.activeField
+    }).then(function (response) {
+        me.graphData = response.data.cases[0].searchResults[0].fields[0].items;
+        me.draw();
+    });
+};
+
+GraphPanel.prototype.draw = function draw() {
+    renderGraph.apply(this);
+};
 
 export default GraphPanel;

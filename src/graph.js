@@ -9,13 +9,13 @@ const crossfilter = dc.crossfilter;
 const MaxPieSlices = 10;
 
 function getChartType() {
-    return Data.activeGraphType === 'line' ? 'line'
-        : Data.activeGraphType === 'pie' ? 'pie'
-        : Data.activeCountAxis === 'y' ? 'bar' : 'row';
+    return this.activeGraphType === 'line' ? 'line'
+        : this.activeGraphType === 'pie' ? 'pie'
+        : this.activeCountAxis === 'y' ? 'bar' : 'row';
 }
 
-function buildChart(parentEl) {
-    switch (getChartType()) {
+function buildChart() {
+    switch (this.getChartType()) {
         case 'line': return dc.lineChart(parentEl);
         case 'pie': return dc.pieChart(parentEl);
         case 'bar': return dc.barChart(parentEl);
@@ -23,28 +23,30 @@ function buildChart(parentEl) {
     }
 }
 
-export function renderGraph(parentEl) {
-    if (Data.graphData.length > 10) {
-        Data.graphData = Data.graphData.filter(function (rec) {
+export function renderGraph() {
+    const me = this;
+
+    if (me.graphData.length > 10) {
+        me.graphData = me.graphData.filter(function (rec) {
             return rec.count > 0;
         });
     }
-    Data.graphData.sort(function (left, right) {
+    me.graphData.sort(function (left, right) {
         return right.count - left.count;
     });
 
-    var chart = buildChart(parentEl),
-        ndx = crossfilter(Data.graphData),
+    var chart = buildChart(this.parentEl.find('.graph')[0]),
+        ndx = crossfilter(me.graphData),
         valueDim = ndx.dimension(function (d, index) { return index; }),
         valueGroup = valueDim.group().reduceSum(function (d) { return d.count; }),
         formatNumber = d3.format(','),
-        rotateXAxisLabels = Data.graphData.length > 8;
+        rotateXAxisLabels = me.graphData.length > 8;
 
     function getLabel(index) {
-        return typeof index === 'string' ? index : Data.graphData[index].name;
+        return typeof index === 'string' ? index : me.graphData[index].name;
     }
 
-    Data.chart = chart;
+    me.chart = chart;
     chart
         .dimension(valueDim)
         .group(valueGroup)
@@ -52,23 +54,23 @@ export function renderGraph(parentEl) {
             return getLabel(d.key) + ": " + formatNumber(d.value) + (d.value === 1 ? " document" : " documents");
         })
         .addFilterHandler(function (filters, index) {
-            if (!Data.syncingSelection) {
-                Ringtail.BrowseSelection.select(Data.activeField, true, [Data.graphData[index].id]);
+            if (!me.syncingSelection) {
+                Ringtail.BrowseSelection.select(me.activeField, true, [me.graphData[index].id]);
             }
 
             filters.push(index);
             return filters;
         })
         .removeFilterHandler(function (filters, index) {
-            if (!Data.syncingSelection) {
-                Ringtail.BrowseSelection.select(Data.activeField, false, [Data.graphData[index].id]);
+            if (!me.syncingSelection) {
+                Ringtail.BrowseSelection.select(me.activeField, false, [me.graphData[index].id]);
             }
 
             filters.splice(filters.indexOf(index), 1);
             return filters;
         });
 
-    if (Data.activeGraphType === 'pie') {
+    if (me.activeGraphType === 'pie') {
         chart
             .externalRadiusPadding(20)
             .slicesCap(MaxPieSlices)
@@ -79,7 +81,7 @@ export function renderGraph(parentEl) {
                 .gap(5)
                 .legendText(function (d) { return getLabel(d.name); }));
     } else {
-        if (Data.activeCountAxis === 'y' || Data.activeGraphType === 'line') {
+        if (me.activeCountAxis === 'y' || me.activeGraphType === 'line') {
             chart
                 .margins({ top: 20, right: 20, bottom: rotateXAxisLabels ? 200 : 30, left: 60 })
                 .x(d3.scale.ordinal())
@@ -117,9 +119,9 @@ export function renderGraph(parentEl) {
         }
     }
 
-    handleResize();
+    me.handleResize();
 
-    Ringtail.BrowseSelection.get(Data.activeField).then(function (selection) {
+    Ringtail.BrowseSelection.get(me.activeField).then(function (selection) {
         updateSelection(selection.values);
     });
     Ringtail.setLoading(false);
@@ -142,14 +144,14 @@ export function updateSelection(selection) {
 }
 
 function handleResize(printing) {
-    var chart = Data.chart,
+    var chart = this.chart,
         width = document.body.clientWidth,
         height = document.body.clientHeight;
     if (!chart) {
         return;
     }
 
-    if (Data.activeGraphType === 'pie') {
+    if (this.activeGraphType === 'pie') {
         chart.innerRadius((Math.min(width, height) - 20) * 0.2);
 
         if (width > height) {
