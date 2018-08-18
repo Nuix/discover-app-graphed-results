@@ -37,6 +37,10 @@ html,body {
     max-height: 250px;
     overflow: hidden auto;
 }
+.ui-menu .ui-state-active {
+    margin: 0;
+    border: 0;
+}
 .pick-graph input {
     max-width: 60px;
 }
