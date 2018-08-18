@@ -108,7 +108,13 @@ GraphPanel.prototype.loadData = function loadData() {
 
 GraphPanel.prototype.draw = function draw() {
     if (this.graphData) {
-        renderGraph.apply(this);
+        renderGraph.call(this);
+    }
+};
+
+GraphPanel.prototype.select = function draw(selection) {
+    if (this.graphData && selection.fieldId === this.activeField) {
+        updateSelection.call(this, selection.values);
     }
 };
 

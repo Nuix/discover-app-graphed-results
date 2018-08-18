@@ -121,9 +121,9 @@ function handleActiveDocChanged(msg) {
 function handleBrowseSelectionChanged(msg) {
     Data.syncingSelection = true;
     try {
-        if (msg.data.fieldId === Data.activeField) {
-            updateSelection(msg.data.values);
-        }
+        getPanels().forEach(function (container) {
+            container.graphPanel.select(msg.data);
+        })
     } finally {
         Data.syncingSelection = false;
     }

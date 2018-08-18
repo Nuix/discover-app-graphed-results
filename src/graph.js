@@ -117,25 +117,26 @@ export function renderGraph() {
     handleResize.call(me);
 
     Ringtail.BrowseSelection.get(me.activeField).then(function (selection) {
-        updateSelection(selection.values);
+        updateSelection.call(me, selection.values);
     });
     Ringtail.setLoading(false);
 }
 
 export function updateSelection(selection) {
-    if (!Data.chart) {
+    const me = this;
+    if (!me.chart) {
         return;
     }
-    Data.chart.filter(null);
+    me.chart.filter(null);
 
     if (selection.length > 0) {
-       Data.graphData.forEach(function (item, index) {
+       me.graphData.forEach(function (item, index) {
            if (selection.indexOf(item.id) >= 0) {
-               Data.chart.filter(index);
+               me.chart.filter(index);
            }
        });
    }
-   Data.chart.redraw();
+   me.chart.redraw();
 }
 
 function handleResize(printing) {
