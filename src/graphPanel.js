@@ -5,14 +5,15 @@ import 'jquery-ui/ui/widgets/autocomplete';
 import 'jquery-ui.combobox';
 
 import { renderGraph, updateSelection, handleResize } from './graph';
+import setLoading from './loadingMask';
 
 function GraphPanel(container, state) {
     state = state || {};
 
-    this.container = container;
-    this.parentEl = container.getElement();       // The container element to render the graph into
-    this.graphData = null;          // Populated when results change via Ringtail API query
-    this.chart = null;              // dcjs rendered chart
+    this.container = container;             // Hosting GoldenLayout container
+    this.parentEl = container.getElement(); // The container element to render the graph into
+    this.graphData = null;                  // Populated when results change via Ringtail API query
+    this.chart = null;                      // dcjs rendered chart
 
     this.activeField = state.activeField || 0;              // Field the user selected to graph coding for
     this.activeGraphType = state.activeGraphType || 'bar';  // Type of graph to draw
@@ -83,8 +84,8 @@ GraphPanel.prototype.loadData = function loadData() {
     }
 
     // Keep track of the current result set ID so we can detect changes
-    this.searchResultId = Ringtail.ActiveDocument.get().searchResultId;
-    Ringtail.setLoading(true);
+    me.searchResultId = Ringtail.ActiveDocument.get().searchResultId;
+    setLoading(me.parentEl, true);
 
     // Request coding count aggregates for the active result set and selected field
     // from Ringtail via GraphQL
@@ -121,6 +122,7 @@ GraphPanel.prototype.loadData = function loadData() {
 GraphPanel.prototype.draw = function draw() {
     if (this.graphData) {
         renderGraph.call(this);
+        setLoading(this.parentEl, false);
     }
 };
 

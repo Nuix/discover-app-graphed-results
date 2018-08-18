@@ -12,6 +12,7 @@ import 'ringtail-extension-sdk';
 
 // Our own dependencies
 import GraphPanel from './graphPanel';
+import setLoading from './loadingMask';
 
 
 // Track our state here so we can differentiate it from local variables by namespace
@@ -130,9 +131,7 @@ function loadFields(refreshFromServer) {
         return Promise.resolve();
     }
 
-    setTimeout(function () {
-        Ringtail.setLoading(true);
-    }, 10);
+    setLoading($(document.body), true);
     
     // Request available coding fields for this user to display in a field picker
     // from Ringtail via GraphQL
@@ -158,6 +157,8 @@ function loadFields(refreshFromServer) {
         });
         Data.fields.unshift({ id: 0, name: 'Select a field' });
         localStorage.setItem('fields-' + Ringtail.Context.caseUuid, JSON.stringify(Data.fields));
+        
+        setLoading($(document.body), false);
     });
 }
 

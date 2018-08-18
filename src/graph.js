@@ -119,7 +119,6 @@ export function renderGraph() {
     Ringtail.BrowseSelection.get(me.activeField).then(function (selection) {
         updateSelection.call(me, selection.values);
     });
-    Ringtail.setLoading(false);
 }
 
 export function updateSelection(selection) {
