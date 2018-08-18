@@ -42,15 +42,16 @@ const DefaultState = {
 
 
 function updateTools() {
+    const isWorkspace = Ringtail.Context.hostLocation === 'Workspace';
     // Construct native Ringtail controls in the pane's toolbar to customize the graphs
     Ringtail.setTools([{
         type: 'button',
-        icon: 'icon-page-refresh',
+        icon: isWorkspace ? 'icon-page-refresh' : 'icon-a-update-index',
         id: 'refreshButton',
         label: 'Reload'
     }, {
         type: 'button',
-        icon: 'icon-add',
+        icon: isWorkspace ? 'icon-add' : 'icon-a-add',
         id: 'addButton',
         label: 'Add panel'
     // }, {
