@@ -33,10 +33,28 @@ const DefaultState = {
         showCloseIcon: false
     },
     content:[{
-        type: 'row',
-        content:[{
-            type: 'component',
-            componentName: 'graph'
+        type: 'column',
+        content: [{
+            type: 'row',
+            content:[{
+                type: 'component',
+                componentName: 'graph'
+            }, {
+                type: 'component',
+                componentName: 'graph'
+            }],
+        }, {
+            type: 'row',
+            content:[{
+                type: 'component',
+                componentName: 'graph'
+            }, {
+                type: 'component',
+                componentName: 'graph'
+            }, {
+                type: 'component',
+                componentName: 'graph'
+            }]
         }]
     }]
 };
