@@ -139,7 +139,7 @@ export function updateSelection(selection) {
    me.chart.redraw();
 }
 
-function handleResize(printing) {
+export function handleResize(printing) {
     var chart = this.chart,
         width = this.graphEl.clientWidth,
         height = this.graphEl.clientHeight;
@@ -166,15 +166,4 @@ function handleResize(printing) {
         .width(width)
         .height(height)
         .render();
-}
-
-if (window.matchMedia) {
-    var mediaQueryList = window.matchMedia('print');
-    mediaQueryList.addListener(function (mql) {
-        if (mql.matches) {
-            handleResize(true);
-        } else {
-            handleResize();
-        }
-    });
 }

@@ -4,7 +4,7 @@ import 'jquery-ui/themes/base/all.css';
 import 'jquery-ui/ui/widgets/autocomplete';
 import 'jquery-ui.combobox';
 
-import { renderGraph, updateSelection } from './graph';
+import { renderGraph, updateSelection, handleResize } from './graph';
 
 function GraphPanel(container, state) {
     state = state || {};
@@ -112,9 +112,15 @@ GraphPanel.prototype.draw = function draw() {
     }
 };
 
-GraphPanel.prototype.select = function draw(selection) {
+GraphPanel.prototype.select = function select(selection) {
     if (this.graphData && selection.fieldId === this.activeField) {
         updateSelection.call(this, selection.values);
+    }
+};
+
+GraphPanel.prototype.setPrintMode = function setPrintMode(printing) {
+    if (this.graphData) {
+        handleResize.call(this, printing);
     }
 };
 

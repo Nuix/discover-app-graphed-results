@@ -52,11 +52,11 @@ function updateTools() {
         icon: 'icon-add',
         id: 'addButton',
         label: 'Add panel'
-    }, {
-        type: 'button',
-        icon: 'icon-print',
-        id: 'printButton',
-        label: 'Print'
+    // }, {
+    //     type: 'button',
+    //     icon: 'icon-print',
+    //     id: 'printButton',
+    //     label: 'Print'
     }]);
 }
 
@@ -144,6 +144,16 @@ function handleToolAction(msg) {
             });
             break;
     }
+}
+
+if (window.matchMedia) {
+    var mediaQueryList = window.matchMedia('print');
+    mediaQueryList.addListener(function (mql) {
+        const printing = !!mql.matches;
+        getPanels().forEach(function (container) {
+            container.graphPanel.setPrintMode(printing);
+        });
+    });
 }
 
 // Register ourselves as a UIX with Ringtail and open communications
