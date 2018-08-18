@@ -83,7 +83,7 @@ export function renderGraph() {
                 .xUnits(dc.units.ordinal)
                 .brushOn(false)
                 .elasticY(true)
-                .yAxisLabel('Coded Document Count')
+                .yAxisLabel('Coded Document Count', 16)
                 .renderLabel(true)
                 .on('pretransition', function (el) {
                     el.selectAll('g.x text')
