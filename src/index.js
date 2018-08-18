@@ -162,7 +162,7 @@ if (window.matchMedia) {
 Ringtail.initialize().then(function () {
     setTimeout(function () {
         Ringtail.setLoading(true);
-    });
+    }, 10);
     
     // Request available coding fields for this user to display in a field picker
     // from Ringtail via GraphQL
