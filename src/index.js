@@ -108,11 +108,17 @@ function checkEmpty() {
 function loadData() {
     if (!Data.layout) return;
 
-    loadFields(true).then(function () {
+    function loadPanels() {
         getPanels().forEach(function (container) {
             container.graphPanel.loadData();
         });
-    });
+    }
+
+    if (Ringtail.Context.hostLocation === 'Case') {
+        loadFields(true).then(loadPanels);
+    } else {
+        loadPanels();
+    }
 }
 
 function loadFields(refreshFromServer) {
