@@ -7,11 +7,6 @@ html,body {
     color: #333333;
 }
 
-.lm_popout,
-.lm_close {
-    display: none;
-}
-
 .toolbar {
     background-color: #F5F6F8;
     display: flex;

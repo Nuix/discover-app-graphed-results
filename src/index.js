@@ -22,6 +22,23 @@ global.Data = {
     layout: null,               // GoldenLayout root
 };
 
+const DefaultState = {
+    dimensions: {
+        borderWidth: 7
+    },
+    settings: {
+        showPopoutIcon: false,
+        showCloseIcon: false
+    },
+    content:[{
+        type: 'row',
+        content:[{
+            type: 'component',
+            componentName: 'graph'
+        }]
+    }]
+};
+
 
 function updateTools() {
     // Construct native Ringtail controls in the pane's toolbar to customize the graphs
@@ -46,22 +63,6 @@ function updateTools() {
 function renderGraph() {
     if (Data.layout) return;
 
-    const DefaultState = {
-        dimensions: {
-            borderWidth: 7
-        },
-        content:[{
-            type: 'row',
-            content:[{
-                type: 'component',
-                componentName: 'graph'
-            }, {
-                type: 'component',
-                componentName: 'graph'
-            }]
-        }]
-    };
-
     let state = null;
     try {
         state = JSON.parse(localStorage.getItem('savedState'));
@@ -77,17 +78,34 @@ function renderGraph() {
     });
 
     Data.layout.init();
+    checkEmpty();
 
-    Data.layout.on('stateChanged', function() {
+    Data.layout.on('stateChanged', function () {
         var state = JSON.stringify(Data.layout.toConfig());
         localStorage.setItem('savedState', state);
+        checkEmpty();
     });
+}
+
+function getPanels() {
+    return (Data.layout && Data.layout.root.contentItems.length)
+        ? Data.layout.root.contentItems[0].getItemsByType('component')
+        : [];
+}
+
+function checkEmpty() {
+    if (Data.layout && getPanels().length < 1) {
+        Data.layout.destroy();
+        Data.layout = null;
+        localStorage.removeItem('savedState');
+        renderGraph();
+    }
 }
 
 function loadData() {
     if (!Data.layout) return;
 
-    Data.layout.root.contentItems[0].getItemsByType('component').forEach(function (container) {
+    getPanels().forEach(function (container) {
         container.graphPanel.loadData();
     });
 }
