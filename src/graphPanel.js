@@ -8,12 +8,14 @@ import { renderGraph, updateSelection, handleResize } from './graph';
 import setLoading from './loadingMask';
 
 function GraphPanel(container, state) {
+    var me = this;
     state = state || {};
 
     this.container = container;             // Hosting GoldenLayout container
     this.parentEl = container.getElement(); // The container element to render the graph into
     this.graphData = null;                  // Populated when results change via Ringtail API query
     this.chart = null;                      // dcjs rendered chart
+    this.loadOnNextShow = false;            // True when we missing a load while hidden
 
     this.activeField = state.activeField || 0;              // Field the user selected to graph coding for
     this.activeGraphType = state.activeGraphType || 'bar';  // Type of graph to draw
@@ -30,6 +32,12 @@ function GraphPanel(container, state) {
 
     this.loadData();
     this.container.on('resize', this.draw.bind(this))
+    this.container.on('show', function () {
+        if (me.loadOnNextShow) {
+            me.loadOnNextShow = false;
+            setTimeout(me.loadData.bind(me));
+        }
+    });
 }
 
 GraphPanel.prototype.buildCombo = function buildCombo(value, choices, cls, callback) {
@@ -80,6 +88,10 @@ GraphPanel.prototype.loadData = function loadData() {
 
     // Skip out if we don't have everything we need to load up yet
     if (!canLoadData || !me.activeField) {
+        return;
+    }
+    if (me.container.isHidden) {
+        me.loadOnNextShow = true;;
         return;
     }
 
