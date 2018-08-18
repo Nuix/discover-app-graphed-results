@@ -65,12 +65,17 @@ GraphPanel.prototype.handleGraphChange = function handleGraphChange(value) {
 
 GraphPanel.prototype.loadData = function loadData() {
     const me = this;
-    const canLoadData = Ringtail.Context.hostLocation !== 'Workspace'
-        || Ringtail.ActiveDocument.get().searchResultId;
+    const isWorkspace = Ringtail.Context.hostLocation === 'Workspace';
+    const canLoadData = !isWorkspace || Ringtail.ActiveDocument.get().searchResultId;
 
-    me.container.setTitle(Data.fields.reduce(function (name, field) {
-        return name || (field.id === me.activeField ? field.name : null);
-    }, null));
+    const field = Data.fields.reduce(function (out, field) {
+        return out || (field.id === me.activeField ? field : null);
+    }, null);
+    if (!field) {
+        return me.handleFieldChange(null);
+    }
+
+    me.container.setTitle(field.name);
 
     // Skip out if we don't have everything we need to load up yet
     if (!canLoadData || !me.activeField) {
@@ -83,27 +88,34 @@ GraphPanel.prototype.loadData = function loadData() {
 
     // Request coding count aggregates for the active result set and selected field
     // from Ringtail via GraphQL
-    Ringtail.query(' \
-    query ($caseId: Int!, $searchResultId: Int!, $fieldId: String!) { \
-        cases (id: $caseId) { \
-            searchResults (id: $searchResultId) { \
-                fields (id: [$fieldId]) { \
-                    items { \
-                        id \
-                        name \
-                        count \
+    if (isWorkspace) {
+        Ringtail.query(' \
+        query ($caseId: Int!, $searchResultId: Int!, $fieldId: String!) { \
+            cases (id: $caseId) { \
+                searchResults (id: $searchResultId) { \
+                    fields (id: [$fieldId]) { \
+                        items { \
+                            id \
+                            name \
+                            count \
+                        } \
                     } \
                 } \
             } \
-        } \
-    }', { 
-        caseId: Ringtail.Context.caseId,
-        searchResultId: me.searchResultId,
-        fieldId: me.activeField
-    }).then(function (response) {
-        me.graphData = response.data.cases[0].searchResults[0].fields[0].items;
+        }', { 
+            caseId: Ringtail.Context.caseId,
+            searchResultId: me.searchResultId,
+            fieldId: me.activeField
+        }).then(function (response) {
+            me.graphData = response.data.cases[0].searchResults[0].fields[0].items;
+            me.draw();
+        });
+    } else {
+        me.graphData = Data.fields.reduce(function (items, field) {
+            return items || (field.id === me.activeField ? field.items : null);
+        }, null);
         me.draw();
-    });
+    }
 };
 
 GraphPanel.prototype.draw = function draw() {
