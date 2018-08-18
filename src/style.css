@@ -44,7 +44,14 @@ html,body {
     flex: 1;
 }
 
-
+.lm_header .lm_tab {
+    padding-top: 2px;
+}
+.lm_header .lm_tab .lm_close_tab {
+    right: 2px;
+    top: 0;
+    padding: 4px;
+}
 .lm_content {
     background: white;
     border: 1px solid #cfcfcf;
