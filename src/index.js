@@ -23,7 +23,9 @@ global.Data = {
     layout: null,               // GoldenLayout root
 };
 
-let SaveStateId;
+let SaveStateId;    // Local storage key for saved panel layout
+let SaveFieldsId;   // Local storage key for cached fields query response
+
 const DefaultState = {
     dimensions: {
         borderWidth: 7
@@ -84,7 +86,7 @@ function updateTools() {
 function buildWorkspace() {
     if (Data.layout) return;
 
-    SaveStateId = 'Layout-' + Ringtail.Context.hostLocation;
+    SaveStateId = 'layout-' + Ringtail.Context.hostLocation + '-' + Ringtail.Context.caseUuid;
     let state = null;
     try {
         state = JSON.parse(localStorage.getItem(SaveStateId));
@@ -141,8 +143,9 @@ function loadData() {
 }
 
 function loadFields(refreshFromServer) {
+    SaveFieldsId = 'fields-' + Ringtail.Context.caseUuid;
     try {
-        Data.fields = JSON.parse(localStorage.getItem('fields-' + Ringtail.Context.caseUuid));
+        Data.fields = JSON.parse(localStorage.getItem(SaveFieldsId));
     } catch (ex) { }
 
     if (Data.fields && !refreshFromServer) {
@@ -174,7 +177,7 @@ function loadFields(refreshFromServer) {
             return left.name.localeCompare(right.name);
         });
         Data.fields.unshift({ id: 0, name: 'Select a field' });
-        localStorage.setItem('fields-' + Ringtail.Context.caseUuid, JSON.stringify(Data.fields));
+        localStorage.setItem(SaveFieldsId, JSON.stringify(Data.fields));
         
         setLoading($(document.body), false);
     });
