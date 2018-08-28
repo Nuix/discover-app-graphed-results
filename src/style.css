@@ -15,7 +15,7 @@ html,body {
 }
 .toolbar .ui-combobox {
     margin-right: 5px;
-    background: white;
+    background: #FFF;
     border: 1px solid #cfcfcf;
     display: flex;
     align-items: center;
@@ -47,17 +47,23 @@ html,body {
 .fill {
     flex: 1;
 }
-
 .lm_header .lm_tab {
     padding-top: 2px;
+    color: #999;
+    background: #f5f6f8;
 }
+.lm_header .lm_tab.lm_active {
+    border-bottom: none;
+    box-shadow: none;
+}
+
 .lm_header .lm_tab .lm_close_tab {
     right: 2px;
     top: 0;
     padding: 4px;
 }
 .lm_content {
-    background: white;
+    background: #FFF;
     border: 1px solid #cfcfcf;
     display: flex;
     flex-direction: column;
@@ -66,15 +72,31 @@ html,body {
     flex: 1;
     overflow: hidden;
 }
-
-
 .dc-chart .axis text,
 .dc-chart g.row text {
     font-family: 'Segoe UI', Arial, Tahoma, sans-serif;
     font-size: 13px;
     fill: #333333;
 }
-.dc-chart .selected path {
-    stroke: #333;
-    stroke-width: 2;
+.dc-chart .selected path,
+.dc-chart rect.bar.selected,
+.dc-chart g.row rect.selected {
+    fill: #8e2b66;
+}
+.dc-chart .selected path, .dc-chart .selected circle {
+    stroke-width: 0;
+}
+.dc-chart .axis line {
+    stroke: #999;
+}
+.dc-chart .axis path, .dc-chart .axis line {
+    fill: none;
+    stroke: #999;
+    shape-rendering: crispEdges;
+}
+.dc-chart .y-label, .dc-chart .x-axis-label {
+   font-size: 12px!important;
+}
+.dc-legend {
+    font-size: 12px;
 }
