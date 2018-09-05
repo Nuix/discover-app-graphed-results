@@ -7,6 +7,12 @@ const d3 = dc.d3;
 const crossfilter = dc.crossfilter;
 
 const MaxPieSlices = 10;
+const Colors = [
+    '#5c8ef4', '#d35e24', '#009788',
+    '#5f92d2', '#de9a13', '#9ac24a',
+    '#87acd8', '#efca86', '#c9e265',
+    '#d4e0f2', '#f9edd5', '#e6f09b'
+]
 
 function buildChart(parentEl) {
     switch (this.activeGraphType) {
@@ -52,6 +58,13 @@ export function renderGraph() {
         .title(function (d) {
             return getLabel(d.key) + ": " + formatNumber(d.value) + (d.value === 1 ? " document" : " documents");
         })
+        .colors(function (i) {
+            return Colors[i];
+        })
+        .colorAccessor(function (d, i) {
+            return i;
+        })
+        // .colors(d3.scale.ordinal(Colors))
         .addFilterHandler(function (filters, index) {
             if (!me.syncingSelection) {
                 Ringtail.BrowseSelection.select(me.activeField, true, [me.graphData[index].id]);
