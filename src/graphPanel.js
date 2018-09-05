@@ -26,7 +26,6 @@ function GraphPanel(container, state) {
     toolbarEl.append(this.buildCombo(this.activeGraphType, [
         { id: 'bar', name: 'Column' },
         { id: 'row', name: 'Row' },
-        { id: 'line', name: 'Line' },
         { id: 'pie', name: 'Pie' },
     ], 'pick-graph', this.handleGraphChange));
 

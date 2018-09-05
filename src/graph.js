@@ -10,10 +10,9 @@ const MaxPieSlices = 10;
 
 function buildChart(parentEl) {
     switch (this.activeGraphType) {
-        case 'line': return dc.lineChart(parentEl);
         case 'pie': return dc.pieChart(parentEl);
         case 'row': return dc.rowChart(parentEl);
-        case 'bar': return dc.barChart(parentEl);
+        default: return dc.barChart(parentEl);
     }
 }
 
@@ -76,7 +75,7 @@ export function renderGraph() {
                 .gap(5)
                 .legendText(function (d) { return getLabel(d.name); }));
     } else {
-        if (me.activeGraphType === 'bar' || me.activeGraphType === 'line') {
+        if (me.activeGraphType === 'bar') {
             chart
                 .margins({ top: 20, right: 20, bottom: rotateXAxisLabels ? 200 : 30, left: 60 })
                 .x(d3.scale.ordinal())
