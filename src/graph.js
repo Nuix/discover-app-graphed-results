@@ -84,6 +84,9 @@ export function renderGraph() {
                 .brushOn(false)
                 .elasticY(true)
                 .yAxisLabel('Coded Document Count', 16)
+                .label(function (d) {
+                    return formatNumber(d.data.value);
+                })
                 .renderLabel(true)
                 .on('pretransition', function (el) {
                     el.selectAll('g.x text')
