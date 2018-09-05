@@ -12,7 +12,9 @@ function buildChart(parentEl) {
     switch (this.activeGraphType) {
         case 'pie': return dc.pieChart(parentEl);
         case 'row': return dc.rowChart(parentEl);
-        default: return dc.barChart(parentEl);
+        default:
+            this.activeGraphType = 'bar';
+            return dc.barChart(parentEl);
     }
 }
 
