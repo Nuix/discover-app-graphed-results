@@ -34,7 +34,10 @@ export function renderGraph() {
         valueDim = ndx.dimension(function (d, index) { return index; }),
         valueGroup = valueDim.group().reduceSum(function (d) { return d.count; }),
         formatNumber = d3.format(','),
-        rotateXAxisLabels = me.graphData.length > 8;
+        rotateXAxisLabels = me.graphData.length > 8 || me.graphEl.clientWidth < 600,
+        bottomMargin = Math.min(225, me.graphData.reduce(function (len, d) {
+            return Math.max(len, d.name.length);
+        }, 10) * 5);
 
     function getLabel(index) {
         return typeof index === 'string' ? index : me.graphData[index].name;
@@ -77,7 +80,7 @@ export function renderGraph() {
     } else {
         if (me.activeGraphType === 'bar') {
             chart
-                .margins({ top: 20, right: 20, bottom: rotateXAxisLabels ? 200 : 30, left: 60 })
+                .margins({ top: 20, right: 20, bottom: rotateXAxisLabels ? bottomMargin : 30, left: 60 })
                 .x(d3.scale.ordinal())
                 .xUnits(dc.units.ordinal)
                 .brushOn(false)
