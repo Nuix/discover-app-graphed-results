@@ -44,5 +44,5 @@ _NOTE: You can change the port via the `GRAPHED_RESULTS_PORT` environment variab
 ## How to deploy it
 1. Run `yarn release` to build the minified production app.
 1. Copy the assets from the `dist/` folder to your web server.
-   - You should see `index.html`, `app.js`, and six `.png` files with hashed filenames in this folder.
-1. Update the extension `URL` in the `Portal Home -> UI Extensions` area to reference the new web server location.
+   - You should see `index.html`, `app.js`, and six `.png` files with hashed file names in this folder.
+1. In Ringtail, on the `Portal Management -> UI Extensions` page, click the extension. Then, update the extension `URL` to reference the new web server location.
