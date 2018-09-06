@@ -1,5 +1,9 @@
 'use strict';
 
+import GoldenLayout from 'golden-layout';
+import 'golden-layout/src/css/goldenlayout-base.css';
+import 'golden-layout/src/css/goldenlayout-light-theme.css';
+
 // Promise polyfill for IE11
 import 'promise-polyfill/src/polyfill';
 
@@ -7,157 +11,148 @@ import 'promise-polyfill/src/polyfill';
 import 'ringtail-extension-sdk';
 
 // Our own dependencies
-import { renderGraph, updateSelection } from './graph';
+import GraphPanel from './graphPanel';
+import setLoading from './loadingMask';
 
 
 // Track our state here so we can differentiate it from local variables by namespace
 global.Data = {
     fields: null,               // Populated once on load via Ringtail API query
-    graphData: null,            // Populated when results change via Ringtail API query
-    chart: null,                // dcjs rendered chart
     syncingSelection: false,    // True when setting selection to prevent cycles
-
     searchResultId: null,       // Updated via ActiveDocument event so we can detect changes
+    layout: null,               // GoldenLayout root
+};
 
-    // Field the user selected to graph coding for
-    activeField: localStorage.getItem('GraphedResults.ActiveField') || null,
-    // Type of graph to draw
-    activeGraphType: localStorage.getItem('GraphedResults.ActiveGraphType') || 'bar',
-    // Which axis of the graph shows coding counts
-    activeCountAxis: localStorage.getItem('GraphedResults.ActiveCountAxis') || 'y'
+let SaveStateId;    // Local storage key for saved panel layout
+let SaveFieldsId;   // Local storage key for cached fields query response
+
+const DefaultState = {
+    dimensions: {
+        borderWidth: 7
+    },
+    settings: {
+        showPopoutIcon: false,
+        showCloseIcon: false
+    },
+    content:[{
+        type: 'column',
+        content: [{
+            type: 'row',
+            content:[{
+                type: 'component',
+                componentName: 'graph'
+            }, {
+                type: 'component',
+                componentName: 'graph'
+            }],
+        }, {
+            type: 'row',
+            content:[{
+                type: 'component',
+                componentName: 'graph'
+            }, {
+                type: 'component',
+                componentName: 'graph'
+            }, {
+                type: 'component',
+                componentName: 'graph'
+            }]
+        }]
+    }]
 };
 
 
 function updateTools() {
+    const isWorkspace = Ringtail.Context.hostLocation === 'Workspace';
     // Construct native Ringtail controls in the pane's toolbar to customize the graphs
     Ringtail.setTools([{
-        type: 'combo',
-        id: 'fieldPicker',
-        placeholder: 'Select a field',
-        width: 250,
-        value: Data.activeField,
-        choices: Data.fields.map(function (field) {
-            return { id: field.id, name: field.name };
-        })
-    }, {
-        type: 'combo',
-        id: 'graphTypePicker',
-        width: 80,
-        value: Data.activeGraphType,
-        choices: [
-            { id: 'bar', name: 'Bar' },
-            { id: 'line', name: 'Line' },
-            { id: 'pie', name: 'Pie' },
-        ]
-    }, {
-        type: 'combo',
-        id: 'axisPicker',
-        width: 130,
-        value: Data.activeCountAxis,
-        choices: [
-            { id: 'y', name: 'Y-Axis Counts' },
-            { id: 'x', name: 'X-Axis Counts' },
-        ]
-    }, {
         type: 'button',
-        icon: 'icon-page-refresh',
+        icon: isWorkspace ? 'icon-page-refresh' : 'icon-a-update-index',
         id: 'refreshButton',
         label: 'Reload'
     }, {
         type: 'button',
-        icon: 'icon-print',
-        id: 'printButton',
-        label: 'Print'
+        icon: isWorkspace ? 'icon-add' : 'icon-a-add',
+        id: 'addButton',
+        label: 'Add panel'
+    // }, {
+    //     type: 'button',
+    //     icon: 'icon-print',
+    //     id: 'printButton',
+    //     label: 'Print'
     }]);
 }
 
-function loadData() {
-    // Skip out if we don't have everything we need to load up yet
-    if (!Ringtail.ActiveDocument.get().searchResultId || !Data.activeField) {
-        return;
+function buildWorkspace() {
+    if (Data.layout) return;
+
+    SaveStateId = 'layout-' + Ringtail.Context.hostLocation + '-' + Ringtail.Context.caseUuid;
+    let state = null;
+    try {
+        state = JSON.parse(localStorage.getItem(SaveStateId));
+    } catch (ex) { }
+    if (!state) {
+        state = DefaultState;
     }
 
-    // Keep track of the current result set ID so we can detect changes
-    Data.searchResultId = Ringtail.ActiveDocument.get().searchResultId;
-    Ringtail.setLoading(true);
+    Data.layout = new GoldenLayout(state);
 
-    // Request coding count aggregates for the active result set and selected field
-    // from Ringtail via GraphQL
-    Ringtail.query(' \
-    query ($caseId: Int!, $searchResultId: Int!, $fieldId: String!) { \
-        cases (id: $caseId) { \
-            searchResults (id: $searchResultId) { \
-                fields (id: [$fieldId]) { \
-                    items { \
-                        id \
-                        name \
-                        count \
-                    } \
-                } \
-            } \
-        } \
-    }', { 
-        caseId: Ringtail.Context.caseId,
-        searchResultId: Data.searchResultId,
-        fieldId: Data.activeField
-    }).then(function (response) {
-        Data.graphData = response.data.cases[0].searchResults[0].fields[0].items;
-        renderGraph();
+    Data.layout.registerComponent('graph', function (container, state) {
+        container.parent.graphPanel = new GraphPanel(container, state);
+    });
+
+    Data.layout.init();
+    checkEmpty();
+
+    Data.layout.on('stateChanged', function () {
+        var state = JSON.stringify(Data.layout.toConfig());
+        localStorage.setItem(SaveStateId, state);
+        checkEmpty();
     });
 }
 
-function handleActiveDocChanged(msg) {
-    if (msg.data.searchResultId !== Data.searchResultId) {
-        // We only need to reload when the result set changes - ignore other changes!
-        loadData();
+function getPanels() {
+    return (Data.layout && Data.layout.root.contentItems.length)
+        ? Data.layout.root.contentItems[0].getItemsByType('component')
+        : [];
+}
+
+function checkEmpty() {
+    if (Data.layout && getPanels().length < 1) {
+        Data.layout.destroy();
+        Data.layout = null;
+        localStorage.removeItem(SaveStateId);
+        buildWorkspace();
     }
 }
 
-function handleBrowseSelectionChanged(msg) {
-    Data.syncingSelection = true;
+function loadData() {
+    if (!Data.layout) return;
+
+    function loadPanels() {
+        getPanels().forEach(function (container) {
+            container.graphPanel.loadData();
+        });
+    }
+
+    if (Ringtail.Context.hostLocation === 'Case') {
+        loadFields(true).then(loadPanels);
+    } else {
+        loadPanels();
+    }
+}
+
+function loadFields(refreshFromServer) {
+    SaveFieldsId = 'fields-' + Ringtail.Context.caseUuid;
     try {
-        if (msg.data.fieldId === Data.activeField) {
-            updateSelection(msg.data.values);
-        }
-    } finally {
-        Data.syncingSelection = false;
+        Data.fields = JSON.parse(localStorage.getItem(SaveFieldsId));
+    } catch (ex) { }
+
+    if (Data.fields && !refreshFromServer) {
+        return Promise.resolve();
     }
-}
 
-function handleToolAction(msg) {
-    switch (msg.data.id) {
-        case 'fieldPicker':
-            Data.activeField = msg.data.value;
-            localStorage.setItem('GraphedResults.ActiveField', Data.activeField);
-            loadData();
-            break;
-        case 'graphTypePicker':
-            Data.activeGraphType = msg.data.value;
-            localStorage.setItem('GraphedResults.ActiveGraphType', Data.activeGraphType);
-            renderGraph();
-            break;
-        case 'axisPicker':
-            Data.activeCountAxis = msg.data.value;
-            localStorage.setItem('GraphedResults.ActiveCountAxis', Data.activeCountAxis);
-            renderGraph();
-            break;
-        case 'printButton':
-            window.print();
-            break;
-        case 'refreshButton':
-            loadData();
-            break;
-    }
-}
-
-// Listen for these events from Ringtail
-Ringtail.on('ActiveDocument', handleActiveDocChanged)
-Ringtail.on('BrowseSelection', handleBrowseSelectionChanged);
-Ringtail.on('ToolAction', handleToolAction);
-
-// Register ourselves as a UIX with Ringtail and open communications
-Ringtail.initialize().then(function () {
-    Ringtail.setLoading(true);
+    setLoading($(document.body), true);
     
     // Request available coding fields for this user to display in a field picker
     // from Ringtail via GraphQL
@@ -167,14 +162,83 @@ Ringtail.initialize().then(function () {
             fields (entityId: 1) { \
                 id \
                 name \
+                items { \
+                    id \
+                    name \
+                    count \
+                } \
             } \
         } \
-    }', { caseId: Ringtail.Context.caseId });
-}).then(function (response) {
-    Data.fields = response.data.cases[0].fields;
-    Data.fields.sort(function (left, right) {
-        return left.name.localeCompare(right.name);
+    }', {
+        caseId: Ringtail.Context.caseId
+    }).then(function (response) {
+        Data.fields = response.data.cases[0].fields;
+        Data.fields.sort(function (left, right) {
+            return left.name.localeCompare(right.name);
+        });
+        Data.fields.unshift({ id: 0, name: 'Select a field' });
+        localStorage.setItem(SaveFieldsId, JSON.stringify(Data.fields));
+        
+        setLoading($(document.body), false);
     });
+}
+
+function handleActiveDocChanged(msg) {
+    if (msg.data.searchResultId !== Data.searchResultId) {
+        // We only need to reload when the result set changes - ignore other changes!
+        buildWorkspace();
+        loadData();
+    }
+}
+
+function handleBrowseSelectionChanged(msg) {
+    Data.syncingSelection = true;
+    try {
+        getPanels().forEach(function (container) {
+            container.graphPanel.select(msg.data);
+        })
+    } finally {
+        Data.syncingSelection = false;
+    }
+}
+
+function handleToolAction(msg) {
+    switch (msg.data.id) {
+        case 'printButton':
+            window.print();
+            break;
+        case 'refreshButton':
+            loadData();
+            break;
+        case 'addButton':
+            Data.layout.root.contentItems[0].addChild({
+                type: 'component',
+                componentName: 'graph'
+            });
+            break;
+    }
+}
+
+if (window.matchMedia) {
+    var mediaQueryList = window.matchMedia('print');
+    mediaQueryList.addListener(function (mql) {
+        const printing = !!mql.matches;
+        getPanels().forEach(function (container) {
+            container.graphPanel.setPrintMode(printing);
+        });
+    });
+}
+
+// Register ourselves as a UIX with Ringtail and open communications
+Ringtail.initialize().then(function () {
+    return loadFields();
+}).then(function () {
     updateTools();
-    // Wait for the initial ActiveDocument message to trigger the first render
+    
+    // Listen for these events from Ringtail
+    Ringtail.on('ActiveDocument', handleActiveDocChanged);
+    Ringtail.on('BrowseSelection', handleBrowseSelectionChanged);
+    Ringtail.on('ToolAction', handleToolAction);
+
+    buildWorkspace();
 });

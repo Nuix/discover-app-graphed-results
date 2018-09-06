@@ -6,13 +6,72 @@ html,body {
     font-size: 14px;
     color: #333333;
 }
-body {
-    width: 100vw;
-    height: 100vh;
+
+.toolbar {
+    background-color: #F5F6F8;
     display: flex;
-    align-items: stretch;
+    padding: 5px;
+    border-bottom: 1px solid #C5C8CF;
 }
-#graph {
+.toolbar .ui-combobox {
+    margin-right: 5px;
+    background: #FFF;
+    border: 1px solid #cfcfcf;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+.toolbar .ui-combobox input {
+    background-color: transparent;
+    border: none;
+    padding: 1.5px 5px;
+}
+.toolbar .ui-combobox :focus {
+    border: none;
+    outline: none;
+}
+.toolbar .ui-combobox .ui-icon {
+    margin-top: 1px;
+}
+.ui-autocomplete {
+    max-height: 250px;
+    overflow: hidden;
+}
+.ui-menu .ui-state-active {
+    margin: 0;
+    border: 0;
+}
+.pick-graph input {
+    max-width: 60px;
+}
+.fill {
+    flex: 1;
+}
+.lm_header .lm_tab {
+    padding-top: 2px;
+    color: #999;
+    background: #f5f6f8;
+}
+.lm_header .lm_tab.lm_active {
+    border-bottom: none;
+    box-shadow: none;
+}
+.lm_active .lm_title {
+    color: #333;
+}
+
+.lm_header .lm_tab .lm_close_tab {
+    right: 2px;
+    top: 0;
+    padding: 4px;
+}
+.lm_content {
+    background: #FFF;
+    border: 1px solid #cfcfcf;
+    display: flex;
+    flex-direction: column;
+}
+.graph {
     flex: 1;
     overflow: hidden;
 }
@@ -22,7 +81,25 @@ body {
     font-size: 13px;
     fill: #333333;
 }
-.dc-chart .selected path {
-    stroke: #333;
-    stroke-width: 2;
+.dc-chart .selected path,
+.dc-chart rect.bar.selected,
+.dc-chart g.row rect.selected {
+    fill: #8e2b66;
+}
+.dc-chart .selected path, .dc-chart .selected circle {
+    stroke-width: 0;
+}
+.dc-chart .axis line {
+    stroke: #999;
+}
+.dc-chart .axis path, .dc-chart .axis line {
+    fill: none;
+    stroke: #999;
+    shape-rendering: crispEdges;
+}
+.dc-chart .y-label, .dc-chart .x-axis-label {
+   font-size: 12px!important;
+}
+.dc-legend {
+    font-size: 12px;
 }
