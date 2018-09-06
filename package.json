@@ -1,6 +1,6 @@
 {
   "name": "ringtail-app-graphed-results",
-  "version": "0.9.0",
+  "version": "1.0.0",
   "description": "Example app using Ringtail's extensibility APIs to display user coding in graphs",
   "main": "index.js",
   "repository": "https://github.com/ringtail-software/ringtail-app-graphed-results.git",
