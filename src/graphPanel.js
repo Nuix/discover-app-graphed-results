@@ -3,6 +3,7 @@ import jquery from 'jquery';
 import 'jquery-ui/themes/base/all.css';
 import 'jquery-ui/ui/widgets/autocomplete';
 import 'jquery-ui.combobox';
+import 'jquery-ui.combobox/lib/jquery-ui.combobox.css';
 
 import { renderGraph, updateSelection, handleResize } from './graph';
 import setLoading from './loadingMask';
@@ -50,7 +51,6 @@ GraphPanel.prototype.buildCombo = function buildCombo(value, choices, cls, callb
     el.combobox();
     el.on('change', function () {
         callback.call(me, this.value === '0' ? null : this.value);
-        // jquery('.ui-helper-hidden-accessible').remove();
     });
     return el.next().addClass(cls);
 }

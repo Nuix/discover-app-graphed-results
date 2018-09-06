@@ -31,18 +31,23 @@ html,body {
     outline: none;
 }
 .toolbar .ui-combobox .ui-icon {
-    margin-top: 1px;
+    right: 2px;
+    background-color: white;
 }
 .ui-autocomplete {
     max-height: 250px;
     overflow: hidden;
+    overflow-y: auto;
 }
 .ui-menu .ui-state-active {
     margin: 0;
     border: 0;
 }
+.pick-field input {
+    max-width: 200px;
+}
 .pick-graph input {
-    max-width: 60px;
+    max-width: 70px;
 }
 .fill {
     flex: 1;
