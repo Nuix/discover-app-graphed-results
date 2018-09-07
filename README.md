@@ -18,8 +18,6 @@ It demonstrates:
 
 _NOTE: You can change the port via the `GRAPHED_RESULTS_PORT` environment variable._
 
-For a release build, you can also run `yarn release` for a much smaller application bundle.
-
 ## How to integrate it with Ringtail
 1. Log in to Ringtail.
 1. On the `Portal Management -> Settings -> Portal Options` page, make sure that the **Ringtail Connect API URL** is set. Test that the API service is running by checking `http://yourRingtailURL/Ringtail-Svc-Portal/health/test`.
@@ -42,3 +40,9 @@ For a release build, you can also run `yarn release` for a much smaller applicat
    - If you added the extension as a `Case home page`:
       1. Navigate to the Case Home page.
       1. Click the extension tab in the navigation pane.
+
+## How to deploy it
+1. Run `yarn release` to build the minified production app.
+1. Copy the assets from the `dist/` folder to your web server.
+   - You should see `index.html`, `app.js`, and six `.png` files with hashed file names in this folder.
+1. In Ringtail, on the `Portal Management -> UI Extensions` page, click the extension. Then, update the extension `URL` to reference the new web server location.
