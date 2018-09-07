@@ -41,7 +41,7 @@ _NOTE: You can change the port via the `GRAPHED_RESULTS_PORT` environment variab
       1. Navigate to the Case Home page.
       1. Click the extension tab in the navigation pane.
 
-## How to deploy it
+## How to deploy it to production
 1. Run `yarn release` to build the minified production app.
 1. Copy the assets from the `dist/` folder to your web server.
    - You should see `index.html`, `app.js`, and six `.png` files with hashed file names in this folder.
