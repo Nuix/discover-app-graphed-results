@@ -24,7 +24,6 @@ global.Data = {
 };
 
 let SaveStateId;    // Local storage key for saved panel layout
-let SaveFieldsId;   // Local storage key for cached fields query response
 
 const DefaultState = {
     dimensions: {
@@ -129,31 +128,23 @@ function checkEmpty() {
 function loadData() {
     if (!Data.layout) return;
 
-    function loadPanels() {
+    loadFields().then(function() {
         getPanels().forEach(function (container) {
             container.graphPanel.loadData();
         });
-    }
-
-    if (Ringtail.Context.hostLocation === 'Case') {
-        loadFields(true).then(loadPanels);
-    } else {
-        loadPanels();
-    }
+    });
 }
 
-function loadFields(refreshFromServer) {
-    SaveFieldsId = 'fields-' + Ringtail.Context.caseUuid;
-    try {
-        Data.fields = JSON.parse(localStorage.getItem(SaveFieldsId));
-    } catch (ex) { }
-
-    if (Data.fields && !refreshFromServer) {
-        return Promise.resolve();
+function loadFields() {
+    // Clean cached fields out of localStorage, if any
+    for (let key in localStorage) {
+        if (localStorage.hasOwnProperty(key) && key.indexOf('fields-') === 0) {
+            localStorage.removeItem(key);
+        }
     }
 
     setLoading($(document.body), true);
-    
+
     // Request available coding fields for this user to display in a field picker
     // from Ringtail via GraphQL
     return Ringtail.query(' \
@@ -177,8 +168,7 @@ function loadFields(refreshFromServer) {
             return left.name.localeCompare(right.name);
         });
         Data.fields.unshift({ id: 0, name: 'Select a field' });
-        localStorage.setItem(SaveFieldsId, JSON.stringify(Data.fields));
-        
+
         setLoading($(document.body), false);
     });
 }
@@ -234,7 +224,7 @@ Ringtail.initialize().then(function () {
     return loadFields();
 }).then(function () {
     updateTools();
-    
+
     // Listen for these events from Ringtail
     Ringtail.on('ActiveDocument', handleActiveDocChanged);
     Ringtail.on('BrowseSelection', handleBrowseSelectionChanged);
