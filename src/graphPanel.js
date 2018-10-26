@@ -114,7 +114,7 @@ GraphPanel.prototype.loadData = function loadData() {
                     } \
                 } \
             } \
-        }', { 
+        }', {
             caseId: Ringtail.Context.caseId,
             searchResultId: me.searchResultId,
             fieldId: me.activeField
@@ -123,10 +123,24 @@ GraphPanel.prototype.loadData = function loadData() {
             me.draw();
         });
     } else {
-        me.graphData = Data.fields.reduce(function (items, field) {
-            return items || (field.id === me.activeField ? field.items : null);
-        }, null);
-        me.draw();
+        return Ringtail.query(' \
+        query ($caseId: Int! $fieldId: String) { \
+            cases (id: $caseId) { \
+                fields (entityId: 1 id: [$fieldId]) { \
+                    items { \
+                        id \
+                        name \
+                        count \
+                    } \
+                } \
+            } \
+        }', {
+            caseId: Ringtail.Context.caseId,
+            fieldId: me.activeField
+        }).then(function (response) {
+            me.graphData = response.data.cases[0].fields[0].items;
+            me.draw();
+        });
     }
 };
 
