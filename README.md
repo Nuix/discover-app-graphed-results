@@ -13,7 +13,7 @@ It demonstrates:
 1. Sync this repo locally.
 1. Run `yarn` on the command line to install dependencies.
 1. Run `yarn dev` to build the code and start a file change watcher.
-1. Run `yarn start` to start the web server.
+1. In a new terminal, run `yarn start` to also start the web server.
 1. Navigate to `http://localhost:12345/` in a browser to verify that the app loads.
 
 _NOTE: You can change the port via the `GRAPHED_RESULTS_PORT` environment variable._
