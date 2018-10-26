@@ -156,7 +156,6 @@ function loadFields() {
                 items { \
                     id \
                     name \
-                    count \
                 } \
             } \
         } \
