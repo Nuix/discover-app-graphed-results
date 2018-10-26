@@ -5,8 +5,8 @@ html,body {
     font-family: 'Segoe UI', Arial, Tahoma, sans-serif;
     font-size: 14px;
     color: #333333;
+    height: 100%;
 }
-
 .toolbar {
     background-color: #F5F6F8;
     display: flex;
