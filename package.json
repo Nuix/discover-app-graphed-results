@@ -7,9 +7,8 @@
   "author": "Collin Arnold <collin.arnold@fticonsulting.com>",
   "license": "MIT",
   "scripts": {
-    "dev": "webpack --mode development --devtool cheap-module-eval-source-map --watch",
-    "release": "webpack --mode production",
-    "start": "node index.js"
+    "dev": "webpack-dev-server --mode development --devtool cheap-module-eval-source-map --watch",
+    "release": "webpack --mode production"
   },
   "dependencies": {
     "dc": "^2.1.10",
@@ -18,7 +17,6 @@
     "jquery-ui": "^1.12.1",
     "jquery-ui.combobox": "^1.0.7",
     "promise-polyfill": "^7.1.0",
-    "restify": "^6.3.4",
     "ringtail-extension-sdk": "^0.9.6",
     "whatwg-fetch": "^2.0.3"
   },
@@ -27,6 +25,7 @@
     "file-loader": "^1.1.11",
     "style-loader": "^0.20.3",
     "webpack": "^4.1.1",
-    "webpack-cli": "^2.0.12"
+    "webpack-cli": "^2.0.12",
+    "webpack-dev-server": "^3.1.10"
   }
 }
