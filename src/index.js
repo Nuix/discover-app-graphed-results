@@ -153,10 +153,6 @@ function loadFields() {
             fields (entityId: 1) { \
                 id \
                 name \
-                items { \
-                    id \
-                    name \
-                } \
             } \
         } \
     }', {
