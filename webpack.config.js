@@ -1,5 +1,6 @@
 const path = require('path');
 const webpack = require('webpack');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
     mode: 'development',
@@ -25,6 +26,11 @@ module.exports = {
             "$": "jquery",
             "jQuery": "jquery",
             "window.jQuery": "jquery"
+        }),
+        new HtmlWebpackPlugin({
+            title: 'Graphed Results - Ringtail UI Extension',
+            filename: 'index.html',
+            hash: true
         }),
     ]
 };
