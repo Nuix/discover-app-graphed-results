@@ -58,4 +58,3 @@ typings/
 .env
 
 dist/
-!dist/index.html
