@@ -19,6 +19,8 @@ _NOTE: You can change the port via the `GRAPHED_RESULTS_PORT` environment variab
 
 ## How to integrate it with Ringtail
 1. Log in to Ringtail.
+1. Verify an Organization has been created and appropriate cases and users have been assigned to, including the user that is performing ther rest of this procedure.
+1. On the `Portal Management -> User administration` page selet the user that is performing this procedure.  On the left menu select `API Access` and check the box to authorize access to the API.  Repeat this step for all users that will use the extension.
 1. On the `Portal Management -> Settings -> Portal Options` page, make sure that the **Ringtail Connect API URL** is set. Test that the API service is running by checking `http://yourRingtailURL/Ringtail-Svc-Portal/health/test`.
 1. Navigate to `Portal Home -> UI Extensions`.
 1. Add a new extension with the following values:
