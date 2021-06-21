@@ -1,13 +1,13 @@
-# Ringtail App: Graphed Results
-This is an example app built using Ringtail's extensibility APIs to display user coding in graphs.
+# Discover App: Graphed Results
+This is an example app built using Discover's extensibility APIs to display user coding in graphs.
 
 It demonstrates:
 - App setup and construction
 - UI Extension SDK initialization
 - Connect API querying
-- Constructing custom tools in Ringtail's UI
-- Responding to user actions from Ringtail, and
-- Manipulating Ringtail's Browse selection state
+- Constructing custom tools in Discover's UI
+- Responding to user actions from Discover, and
+- Manipulating Discover's Browse selection state
 
 ## How to run it
 1. Sync this repo locally.
@@ -17,13 +17,13 @@ It demonstrates:
 
 _NOTE: You can change the port via the `GRAPHED_RESULTS_PORT` environment variable._
 
-## How to integrate it with Ringtail
-1. Log in to Ringtail.
-1. On the `Portal Management -> Settings -> Portal Options` page, make sure that the **Ringtail Connect API URL** is set. Test that the API service is running by checking `http://yourRingtailURL/Ringtail-Svc-Portal/health/test`.
+## How to integrate it with Discover
+1. Log in to Discover.
+1. On the `Portal Management -> Settings -> Portal Options` page, make sure that the **Discover Connect API URL** is set. Test that the API service is running by checking `http://yourDiscoverURL/Ringtail-Svc-Portal/health/test`.
 1. Navigate to `Portal Home -> UI Extensions`.
 1. Add a new extension with the following values:
    - Name: `Graphed Results`
-   - Location: Choose the location in Ringtail for the extension to appear:
+   - Location: Choose the location in Discover for the extension to appear:
      - `Workspace pane`: Graphs data for the current search results
      - `Case home page`: Graphs data for the current case
    - URL: `http://localhost:12345/`
@@ -44,4 +44,4 @@ _NOTE: You can change the port via the `GRAPHED_RESULTS_PORT` environment variab
 1. Run `yarn release` to build the minified production app.
 1. Copy the assets from the `dist/` folder to your web server.
    - You should see `index.html`, `app.js`, and six `.png` files with hashed file names in this folder.
-1. In Ringtail, on the `Portal Management -> UI Extensions` page, click the extension. Then, update the extension `URL` to reference the new web server location.
+1. In Discover, on the `Portal Management -> UI Extensions` page, click the extension. Then, update the extension `URL` to reference the new web server location.
