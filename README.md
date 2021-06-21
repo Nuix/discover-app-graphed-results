@@ -19,7 +19,7 @@ _NOTE: You can change the port via the `GRAPHED_RESULTS_PORT` environment variab
 
 ## How to integrate it with Discover
 1. Log in to Discover.
-1. On the `Portal Management -> Settings -> Portal Options` page, make sure that the **Discover Connect API URL** is set. Test that the API service is running by checking `http://yourDiscoverURL/Discover-Svc-Portal/health/test`.
+1. On the `Portal Management -> Settings -> Portal Options` page, make sure that the **Discover Connect API URL** is set. Test that the API service is running by checking `http://yourDiscoverURL/yourDiscoverPortal/health/test`.
 1. Navigate to `Portal Home -> UI Extensions`.
 1. Add a new extension with the following values:
    - Name: `Graphed Results`
