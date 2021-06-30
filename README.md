@@ -45,3 +45,19 @@ _NOTE: You can change the port via the `GRAPHED_RESULTS_PORT` environment variab
 1. Copy the assets from the `dist/` folder to your web server.
    - You should see `index.html`, `app.js`, and six `.png` files with hashed file names in this folder.
 1. In Discover, on the `Portal Management -> UI Extensions` page, click the extension. Then, update the extension `URL` to reference the new web server location.
+
+# License
+
+Copyright 2021 Nuix
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
