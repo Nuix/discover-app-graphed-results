@@ -14,7 +14,7 @@
     "dc": "^2.1.10",
     "golden-layout": "^1.5.9",
     "jquery": "^3.3.1",
-    "jquery-ui": "^1.12.1",
+    "jquery-ui": "^1.13.2",
     "jquery-ui.combobox": "^1.0.7",
     "promise-polyfill": "^7.1.0",
     "ringtail-extension-sdk": "^0.9.6",
