@@ -1,10 +1,10 @@
 {
   "name": "ringtail-app-graphed-results",
   "version": "1.0.0",
-  "description": "Example app using Ringtail's extensibility APIs to display user coding in graphs",
+  "description": "Example app using Discover's extensibility APIs to display user coding in graphs",
   "main": "index.js",
-  "repository": "https://github.com/ringtail-software/ringtail-app-graphed-results.git",
-  "author": "Collin Arnold <collin.arnold@fticonsulting.com>",
+  "repository": "https://github.com/Nuix/discover-app-graphed-results.git",
+  "author": "Nuix",
   "license": "MIT",
   "scripts": {
     "dev": "webpack-dev-server --mode development --devtool cheap-module-eval-source-map --watch",
