@@ -1,5 +1,5 @@
 {
-  "name": "ringtail-app-graphed-results",
+  "name": "discover-app-graphed-results",
   "version": "1.0.0",
   "description": "Example app using Discover's extensibility APIs to display user coding in graphs",
   "main": "index.js",
